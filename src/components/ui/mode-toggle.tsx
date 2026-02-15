@@ -4,13 +4,21 @@ import * as React from "react";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
+<<<<<<< HEAD
 import { Button } from "@/components/ui/button";
+=======
+import { Button } from "@/src/components/ui/button";
+>>>>>>> 0aa48e003730ea5aa0da3184911fa532bd2b1354
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+<<<<<<< HEAD
 } from "@/components/ui/dropdown-menu";
+=======
+} from "@/src/components/ui/dropdown-menu";
+>>>>>>> 0aa48e003730ea5aa0da3184911fa532bd2b1354
 
 export function ModeToggle() {
   const { setTheme } = useTheme();
