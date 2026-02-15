@@ -1,36 +1,88 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ATLAS Frontend
 
-## Getting Started
+> A fully functional frontend mockup with mock data, built for demonstration and stakeholder presentation purposes.
 
-First, run the development server:
+[![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black)](https://nextjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-CSS-38bdf8)](https://tailwindcss.com/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Project Status
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Current Phase**: Initial Development / Mockup Phase  
+**Goal**: Functional frontend demo for General Assembly presentation  
+**Deadline**: February 25, 2026  
+**Backend**: Not integrated yet (using mock data)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Overview
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This frontend implementation provides:
+## Features
 
-## Learn More
+### Admin (`/admin`)
 
-To learn more about Next.js, take a look at the following resources:
+- **Student Management** - Approve/reject membership registrations, view member directory
+- **Event Management** - Create events, track attendance 
+- **Fines Management** - Issue and track fines (with auto-generation from attendance)
+- **Membership Fees** - Monitor fee collection and payment status
+- **Payment Review** - Approve/decline student payment submissions with receipt verification
+- **Clearance Management** - Generate and manage student clearances
+- **Financial Reports** - Visual analytics and financial summaries // do not prioritize
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Student Portal (`/portal`)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Dashboard** - Personal overview with quick stats
+- **Events** - View upcoming events and personal attendance history
+- **Fines** - View fines and submit GCash payments
+- **Membership Fees** - View fees and submit GCash payments
+- **Clearance** - Check clearance status and requirements
 
-## Deploy on Vercel
+#  Submitting Feedbacks 
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This section will help you understand how to effectively communicate with the front-end team.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+ Since this is the starting phase:
+- Questions are encouraged
+- Suggestions are valued
+- Constructive criticism helps us improve
+---
+
+
+### Option 1: Open a Discussion (Recommended for ideas/questions)
+
+1. Go to **GitHub Discussions** tab
+2. Click **New Discussion**
+3. Choose category:
+   - **Ideas** - Component suggestions, UX improvements
+   - **Q&A** - Questions about code or implementation
+   - **Show and Tell** - Share your improvements
+   - **General** - Anything else
+
+**When to use:** General feedback, brainstorming, asking questions
+
+### Option 2: Create an Issue (For specific actionable items)
+
+1. Go to **Issues** tab
+2. Click **New Issue**
+3. Submit Observations/suggestions. Make sure to make it comprehensive.
+
+**When to use:** Concrete feature requests, issues for the UI/UX logic and flow 
+
+### Option 3 (during PRs): Quick Feedback in Code Review
+
+If you're reviewing a PR and have broader feedback beyond that specific change, leave a comment and optionally create an issue for tracking.
+
+---
+
+## Pull Request Process
+
+### Before You Start
+
+1. **Check existing issues/PRs** - Don't duplicate work
+2. **Discuss major changes** - Create an issue first for big suggestions
+3. **Pull latest changes** - Always start from up-to-date `dev`
+
+### Creating a Pull Request
+
+1. **Create a feature branch from `dev` branch** 
+   ```bash
+   git checkout -b feature/your-feature-name
