@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Badge } from "@/src/components/ui/badge"
 import { Progress } from "@/src/components/ui/progress"
 import { currentStudentClearance } from "@/lib/mock-data"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/lib/utils"
 import type { ClearanceItemStatus } from "@/lib/types"
 
 const statusConfig: Record<ClearanceItemStatus, { icon: typeof Check; color: string; bgColor: string; iconBg: string }> = {
@@ -43,12 +43,12 @@ export default function PortalClearancePage() {
               <div className={cn(
                 "flex size-14 items-center justify-center rounded-full",
                 clearance.overallStatus === "cleared" ? "bg-success/10" :
-                clearance.overallStatus === "not-cleared" ? "bg-destructive/10" : "bg-warning/10"
+                  clearance.overallStatus === "not-cleared" ? "bg-destructive/10" : "bg-warning/10"
               )}>
                 <ShieldCheck className={cn(
                   "size-7",
                   clearance.overallStatus === "cleared" ? "text-success" :
-                  clearance.overallStatus === "not-cleared" ? "text-destructive" : "text-warning"
+                    clearance.overallStatus === "not-cleared" ? "text-destructive" : "text-warning"
                 )} />
               </div>
               <div>

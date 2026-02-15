@@ -12,7 +12,7 @@ import {
   currentStudentAttendance,
   events,
 } from "@/lib/mock-data"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/lib/utils"
 
 export default function PortalDashboard() {
   const unpaidFines = currentStudentFines.filter(f => f.status === "unpaid")
@@ -63,7 +63,7 @@ export default function PortalDashboard() {
                 <ShieldCheck className={cn(
                   "size-5",
                   clearance?.overallStatus === "cleared" ? "text-success" :
-                  clearance?.overallStatus === "not-cleared" ? "text-destructive" : "text-warning"
+                    clearance?.overallStatus === "not-cleared" ? "text-destructive" : "text-warning"
                 )} />
                 <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
@@ -130,16 +130,16 @@ export default function PortalDashboard() {
                     className={cn(
                       "flex items-center justify-between rounded-md border p-3",
                       r.status === "cleared" ? "border-success/20 bg-success/5" :
-                      r.status === "not-cleared" ? "border-destructive/20 bg-destructive/5" :
-                      "border-border"
+                        r.status === "not-cleared" ? "border-destructive/20 bg-destructive/5" :
+                          "border-border"
                     )}
                   >
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         "flex size-6 items-center justify-center rounded-full",
                         r.status === "cleared" ? "bg-success text-success-foreground" :
-                        r.status === "not-cleared" ? "bg-destructive/20 text-destructive" :
-                        "bg-muted text-muted-foreground"
+                          r.status === "not-cleared" ? "bg-destructive/20 text-destructive" :
+                            "bg-muted text-muted-foreground"
                       )}>
                         <Icon className="size-3" />
                       </div>

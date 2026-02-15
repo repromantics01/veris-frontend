@@ -20,7 +20,7 @@ import { events as initialEvents, eventAttendance } from "@/lib/mock-data"
 import type { Event as EventType } from "@/lib/types"
 import { toast } from "sonner"
 import { StatCard } from "@/components/stat-card"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/lib/utils"
 
 const typeColors: Record<string, string> = {
   "general-assembly": "bg-primary/10 text-primary",

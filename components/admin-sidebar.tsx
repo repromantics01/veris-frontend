@@ -15,7 +15,7 @@ import {
   Menu,
   X,
 } from "lucide-react"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/lib/utils"
 import { Button } from "@/src/components/ui/button"
 import { Separator } from "@/src/components/ui/separator"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/src/components/ui/sheet"

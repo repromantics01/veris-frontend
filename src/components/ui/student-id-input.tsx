@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { cn } from "@/src/lib/utils";
+import { cn } from "@/lib/lib/utils";
 
 interface StudentIdInputProps {
   value: string;
@@ -239,7 +239,7 @@ export function StudentIdInput({
         : "border-gray-300 dark:border-gray-600",
       disabled && "bg-gray-50 dark:bg-gray-800 hover:border-gray-300",
       digits[index] &&
-        "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600"
+      "bg-blue-50 dark:bg-blue-900/20 border-blue-300 dark:border-blue-600"
     );
 
   const separatorClasses =

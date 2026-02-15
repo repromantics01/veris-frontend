@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Badge } from "@/src/components/ui/badge"
 import { Separator } from "@/src/components/ui/separator"
 import { currentStudentFees, currentStudent } from "@/lib/mock-data"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/lib/utils"
 import type { FeeStatus } from "@/lib/types"
 
 const statusConfig: Record<FeeStatus, { label: string; variant: "secondary" | "destructive" | "outline"; icon: typeof Check; color: string }> = {
@@ -48,7 +48,7 @@ export default function PortalFeesPage() {
                       <div className={cn(
                         "flex size-10 items-center justify-center rounded-full",
                         fee.status === "paid" ? "bg-success/10" :
-                        fee.status === "unpaid" ? "bg-destructive/10" : "bg-warning/10"
+                          fee.status === "unpaid" ? "bg-destructive/10" : "bg-warning/10"
                       )}>
                         <Banknote className={cn("size-5", config.color)} />
                       </div>

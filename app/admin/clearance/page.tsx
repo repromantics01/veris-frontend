@@ -20,7 +20,7 @@ import type { Clearance, ClearanceItemStatus } from "@/lib/types"
 import { toast } from "sonner"
 import { StatCard } from "@/components/stat-card"
 import { Users, AlertTriangle } from "lucide-react"
-import { cn } from "@/src/lib/utils"
+import { cn } from "@/lib/lib/utils"
 
 const overallVariant: Record<ClearanceItemStatus, "secondary" | "destructive" | "outline"> = {
   cleared: "secondary",
