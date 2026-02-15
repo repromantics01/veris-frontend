@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Shield, LogOut, Menu, X, AlertTriangle, ShieldCheck, Banknote, CalendarDays, LayoutDashboard } from "lucide-react"
-import { cn } from "@/lib/lib/utils"
+import { cn } from "@/src/lib/utils"
 import { Button } from "@/src/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/src/components/ui/sheet"
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar"

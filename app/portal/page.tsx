@@ -12,7 +12,7 @@ import {
   currentStudentAttendance,
   events,
 } from "@/lib/mock-data"
-import { cn } from "@/lib/lib/utils"
+import { cn } from "@/src/lib/utils"
 
 export default function PortalDashboard() {
   const unpaidFines = currentStudentFines.filter(f => f.status === "unpaid")

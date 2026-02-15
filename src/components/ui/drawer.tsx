@@ -1,13 +1,9 @@
-"use client"
+  "use client"
 
 import * as React from "react"
 import { Drawer as DrawerPrimitive } from "vaul"
 
-<<<<<<< HEAD
 import { cn } from "@/src/lib/utils"
-=======
-import { cn } from "@/lib/lib/utils"
->>>>>>> 0aa48e003730ea5aa0da3184911fa532bd2b1354
 
 function Drawer({
   ...props

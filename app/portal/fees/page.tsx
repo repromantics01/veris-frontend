@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Badge } from "@/src/components/ui/badge"
 import { Separator } from "@/src/components/ui/separator"
 import { currentStudentFees, currentStudent } from "@/lib/mock-data"
-import { cn } from "@/lib/lib/utils"
+import { cn } from "@/src/lib/utils"
 import type { FeeStatus } from "@/lib/types"
 
 const statusConfig: Record<FeeStatus, { label: string; variant: "secondary" | "destructive" | "outline"; icon: typeof Check; color: string }> = {

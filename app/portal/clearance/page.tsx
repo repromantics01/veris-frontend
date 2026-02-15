@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 import { Badge } from "@/src/components/ui/badge"
 import { Progress } from "@/src/components/ui/progress"
 import { currentStudentClearance } from "@/lib/mock-data"
-import { cn } from "@/lib/lib/utils"
+import { cn } from "@/src/lib/utils"
 import type { ClearanceItemStatus } from "@/lib/types"
 
 const statusConfig: Record<ClearanceItemStatus, { icon: typeof Check; color: string; bgColor: string; iconBg: string }> = {

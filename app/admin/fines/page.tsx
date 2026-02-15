@@ -67,7 +67,7 @@ export default function FinesPage() {
     const student = students.find(s => s.studentId === studentId)
     if (!student) { toast.error("Student not found"); return }
     const newFine: Fine = {
-      id: `fn${Date.now()}`,
+      id: `fn${crypto.randomUUID().slice(0, 8)}`,
       studentId,
       studentName: `${student.firstName} ${student.lastName}`,
       reason,

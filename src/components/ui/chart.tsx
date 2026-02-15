@@ -3,11 +3,7 @@
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
 
-<<<<<<< HEAD
 import { cn } from "@/src/lib/utils"
-=======
-import { cn } from "@/lib/lib/utils"
->>>>>>> 0aa48e003730ea5aa0da3184911fa532bd2b1354
 
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const
@@ -90,15 +86,6 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
             ([theme, prefix]) => `
 ${prefix} [data-chart=${id}] {
 ${colorConfig
-<<<<<<< HEAD
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
-=======
                 .map(([key, itemConfig]) => {
                   const color =
                     itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
@@ -106,7 +93,6 @@ ${colorConfig
                   return color ? `  --color-${key}: ${color};` : null
                 })
                 .join("\n")}
->>>>>>> 0aa48e003730ea5aa0da3184911fa532bd2b1354
 }
 `
           )
@@ -330,13 +316,8 @@ function getPayloadConfigFromPayload(
 
   const payloadPayload =
     "payload" in payload &&
-<<<<<<< HEAD
-    typeof payload.payload === "object" &&
-    payload.payload !== null
-=======
       typeof payload.payload === "object" &&
       payload.payload !== null
->>>>>>> 0aa48e003730ea5aa0da3184911fa532bd2b1354
       ? payload.payload
       : undefined
 
