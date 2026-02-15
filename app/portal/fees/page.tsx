@@ -1,10 +1,21 @@
-import { Banknote, Receipt, Check, Clock, X } from "lucide-react"
+"use client"
+
+import { Banknote, Receipt, Check, Clock, X, CreditCard } from "lucide-react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Badge } from "@/src/components/ui/badge"
 import { Separator } from "@/src/components/ui/separator"
-import { currentStudentFees, currentStudent } from "@/lib/mock-data"
+import { Button } from "@/src/components/ui/button"
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/src/components/ui/dialog"
+import { Label } from "@/src/components/ui/label"
+import { Input } from "@/src/components/ui/input"
+import { currentStudentFees, currentStudent, GCASH_QR_CODE, GCASH_ACCOUNT_NAME, GCASH_ACCOUNT_NUMBER } from "@/src/lib/mock-data"
 import { cn } from "@/src/lib/utils"
-import type { FeeStatus } from "@/lib/types"
+import type { FeeStatus, MembershipFee } from "@/src/lib/types"
+import { toast } from "sonner"
+import Image from "next/image"
 
 const statusConfig: Record<FeeStatus, { label: string; variant: "secondary" | "destructive" | "outline"; icon: typeof Check; color: string }> = {
   paid: { label: "Paid", variant: "secondary", icon: Check, color: "text-success" },
@@ -13,6 +24,32 @@ const statusConfig: Record<FeeStatus, { label: string; variant: "secondary" | "d
 }
 
 export default function PortalFeesPage() {
+  const [paymentOpen, setPaymentOpen] = useState(false)
+  const [selectedFee, setSelectedFee] = useState<MembershipFee | null>(null)
+  const [referenceCode, setReferenceCode] = useState("")
+  const [receiptFile, setReceiptFile] = useState<File | null>(null)
+  const [amount, setAmount] = useState("")
+
+  function openPaymentModal(fee: MembershipFee) {
+    setSelectedFee(fee)
+    setAmount(fee.amount.toString())
+    setPaymentOpen(true)
+  }
+
+  function handlePaymentSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!referenceCode || !receiptFile || !amount) {
+      toast.error("Please fill in all fields")
+      return
+    }
+    toast.success("Payment submitted for review. You will be notified once the admin reviews your payment.")
+    setPaymentOpen(false)
+    setReferenceCode("")
+    setReceiptFile(null)
+    setAmount("")
+    setSelectedFee(null)
+  }
+
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-1">
@@ -79,9 +116,14 @@ export default function PortalFeesPage() {
                   {fee.status === "unpaid" && (
                     <>
                       <Separator />
-                      <p className="text-xs text-muted-foreground">
-                        Please proceed to the USSC office to settle your membership fee.
-                      </p>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-muted-foreground">
+                          Please submit your payment using the button below.
+                        </p>
+                        <Button size="sm" onClick={() => openPaymentModal(fee)}>
+                          <CreditCard className="size-4 mr-1" /> Pay Now
+                        </Button>
+                      </div>
                     </>
                   )}
                 </div>
@@ -98,6 +140,91 @@ export default function PortalFeesPage() {
           </div>
         )}
       </div>
+
+      {/* Payment Modal */}
+      <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Submit Payment for Membership Fee</DialogTitle>
+            <DialogDescription>Pay via GCash and submit proof of payment</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePaymentSubmit} className="flex flex-col gap-4">
+            {selectedFee && (
+              <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                <p className="text-sm font-medium mb-1">Membership Fee Details:</p>
+                <p className="text-sm text-muted-foreground">{selectedFee.academicYear} - {selectedFee.semester}</p>
+                <p className="text-lg font-bold mt-2">Amount: ₱{selectedFee.amount}</p>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <Label>GCash QR Code</Label>
+                <div className="border border-border rounded-lg p-4 bg-background">
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-center mb-2">Scan to pay</p>
+                    <div className="w-48 h-48 mx-auto bg-gray-200 rounded flex items-center justify-center">
+                      <p className="text-xs text-gray-500">QR Code</p>
+                    </div>
+                    <div className="mt-4 text-center">
+                      <p className="text-sm font-medium">{GCASH_ACCOUNT_NAME}</p>
+                      <p className="text-xs text-muted-foreground">{GCASH_ACCOUNT_NUMBER}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="referenceCode">GCash Reference Code *</Label>
+                  <Input
+                    id="referenceCode"
+                    value={referenceCode}
+                    onChange={(e) => setReferenceCode(e.target.value)}
+                    placeholder="e.g., GC-2024-11-150001"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="amount">Amount Paid *</Label>
+                  <Input
+                    id="amount"
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="150"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="receipt">Upload GCash Receipt *</Label>
+                  <Input
+                    id="receipt"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Upload a clear screenshot of your GCash receipt
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setPaymentOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                Submit Payment
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

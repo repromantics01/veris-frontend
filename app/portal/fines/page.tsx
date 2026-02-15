@@ -1,11 +1,22 @@
-import { AlertTriangle } from "lucide-react"
+"use client"
+
+import { AlertTriangle, CreditCard } from "lucide-react"
+import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Badge } from "@/src/components/ui/badge"
+import { Button } from "@/src/components/ui/button"
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/src/components/ui/table"
-import { currentStudentFines, fines } from "@/lib/mock-data"
-import type { FineStatus } from "@/lib/types"
+import {
+  Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle,
+} from "@/src/components/ui/dialog"
+import { Label } from "@/src/components/ui/label"
+import { Input } from "@/src/components/ui/input"
+import { currentStudentFines, GCASH_QR_CODE, GCASH_ACCOUNT_NAME, GCASH_ACCOUNT_NUMBER } from "@/src/lib/mock-data"
+import type { Fine, FineStatus } from "@/src/lib/types"
+import { toast } from "sonner"
+import Image from "next/image"
 
 const statusVariant: Record<FineStatus, "destructive" | "secondary" | "outline"> = {
   unpaid: "destructive",
@@ -17,9 +28,35 @@ export default function PortalFinesPage() {
   // Show all fines for the current student (Maria Santos - ID 2024-00101)
   // Maria has no fines in mock data, so let's show a broader view
   const myFines = currentStudentFines
+  const [paymentOpen, setPaymentOpen] = useState(false)
+  const [selectedFine, setSelectedFine] = useState<Fine | null>(null)
+  const [referenceCode, setReferenceCode] = useState("")
+  const [receiptFile, setReceiptFile] = useState<File | null>(null)
+  const [amount, setAmount] = useState("")
 
   const unpaidAmount = myFines.filter(f => f.status === "unpaid").reduce((s, f) => s + f.amount, 0)
   const paidAmount = myFines.filter(f => f.status === "paid").reduce((s, f) => s + f.amount, 0)
+
+  function openPaymentModal(fine: Fine) {
+    setSelectedFine(fine)
+    setAmount(fine.amount.toString())
+    setPaymentOpen(true)
+  }
+
+  function handlePaymentSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    if (!referenceCode || !receiptFile || !amount) {
+      toast.error("Please fill in all fields")
+      return
+    }
+    // In a real app, this would upload to the server
+    toast.success("Payment submitted for review")
+    setPaymentOpen(false)
+    setReferenceCode("")
+    setReceiptFile(null)
+    setAmount("")
+    setSelectedFine(null)
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -88,18 +125,26 @@ export default function PortalFinesPage() {
                     <TableHead>Status</TableHead>
                     <TableHead>Date Issued</TableHead>
                     <TableHead>Date Paid</TableHead>
+                    <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {myFines.map(fine => (
                     <TableRow key={fine.id}>
                       <TableCell className="text-sm text-foreground">{fine.reason}</TableCell>
-                      <TableCell className="text-right text-sm font-medium text-foreground">P{fine.amount}</TableCell>
+                      <TableCell className="text-right text-sm font-medium text-foreground">₱{fine.amount}</TableCell>
                       <TableCell>
                         <Badge variant={statusVariant[fine.status]} className="capitalize">{fine.status}</Badge>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">{fine.dateIssued}</TableCell>
                       <TableCell className="text-sm text-muted-foreground">{fine.datePaid || "--"}</TableCell>
+                      <TableCell>
+                        {fine.status === "unpaid" && (
+                          <Button size="sm" variant="default" onClick={() => openPaymentModal(fine)}>
+                            <CreditCard className="size-4 mr-1" /> Pay Now
+                          </Button>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -116,6 +161,91 @@ export default function PortalFinesPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Payment Modal */}
+      <Dialog open={paymentOpen} onOpenChange={setPaymentOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Submit Payment for Fine</DialogTitle>
+            <DialogDescription>Pay via GCash and submit proof of payment</DialogDescription>
+          </DialogHeader>
+          <form onSubmit={handlePaymentSubmit} className="flex flex-col gap-4">
+            {selectedFine && (
+              <div className="p-4 rounded-lg bg-muted/50 border border-border">
+                <p className="text-sm font-medium mb-1">Fine Details:</p>
+                <p className="text-sm text-muted-foreground">{selectedFine.reason}</p>
+                <p className="text-lg font-bold mt-2">Amount: ₱{selectedFine.amount}</p>
+              </div>
+            )}
+
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-2">
+                <Label>GCash QR Code</Label>
+                <div className="border border-border rounded-lg p-4 bg-background">
+                  <div className="bg-white p-4 rounded">
+                    <p className="text-sm text-center mb-2">Scan to pay</p>
+                    <div className="w-48 h-48 mx-auto bg-gray-200 rounded flex items-center justify-center">
+                      <p className="text-xs text-gray-500">QR Code</p>
+                    </div>
+                    <div className="mt-4 text-center">
+                      <p className="text-sm font-medium">{GCASH_ACCOUNT_NAME}</p>
+                      <p className="text-xs text-muted-foreground">{GCASH_ACCOUNT_NUMBER}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="referenceCode">GCash Reference Code *</Label>
+                  <Input
+                    id="referenceCode"
+                    value={referenceCode}
+                    onChange={(e) => setReferenceCode(e.target.value)}
+                    placeholder="e.g., GC-2024-11-150001"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="amount">Amount Paid *</Label>
+                  <Input
+                    id="amount"
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    placeholder="150"
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col gap-2">
+                  <Label htmlFor="receipt">Upload GCash Receipt *</Label>
+                  <Input
+                    id="receipt"
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setReceiptFile(e.target.files?.[0] || null)}
+                    required
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Upload a clear screenshot of your GCash receipt
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setPaymentOpen(false)}>
+                Cancel
+              </Button>
+              <Button type="submit">
+                Submit Payment
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
