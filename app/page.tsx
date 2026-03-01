@@ -8,7 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src
 export default function HomePage() {
 
   return (
-    <div className="flex min-h-svh flex-col bg-white overflow-hidden">
+    <div className="flex min-h-svh flex-col bg-white overflow-hidden" suppressHydrationWarning>
       {/* Header */}
       <header className="absolute inset-x-0 top-0 z-30 px-6 sm:px-10 py-5">
         <Link href="/" className="inline-flex items-center gap-4 group">

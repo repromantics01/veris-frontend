@@ -24,8 +24,11 @@ import { students } from "@/app/admin/students/mock-data"
 import type { PaymentLog, PaymentLogStatus } from "../../types"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
-import { StatCard } from "@/components/stat-card"
+import { StatCard } from "@/components/StatCard"
+import { DataPagination } from "@/components/DataPagination"
 import Image from "next/image"
+
+const ITEMS_PER_PAGE = 10
 
 type RowStatus = PaymentLogStatus | "unpaid"
 
@@ -68,6 +71,8 @@ export default function PaymentLogsPage({
   const [filterStatus, setFilterStatus] = useState<string>("all")
   const [viewMode, setViewMode] = useState<"card" | "table">("table")
   const [dataView, setDataView] = useState<"submissions" | "all-students">("submissions")
+  const [currentLogsPage, setCurrentLogsPage] = useState(1)
+  const [currentRowsPage, setCurrentRowsPage] = useState(1)
 
   const [selectedLog, setSelectedLog] = useState<PaymentLog | null>(null)
   const [detailOpen, setDetailOpen] = useState(false)
@@ -114,6 +119,12 @@ export default function PaymentLogsPage({
     const matchesStatus = filterStatus === "all" || r.status === filterStatus
     return matchesSearch && matchesStatus
   })
+
+  const totalLogsPages = Math.ceil(filteredLogs.length / ITEMS_PER_PAGE)
+  const paginatedLogs = filteredLogs.slice((currentLogsPage - 1) * ITEMS_PER_PAGE, currentLogsPage * ITEMS_PER_PAGE)
+
+  const totalRowsPages = Math.ceil(filteredRows.length / ITEMS_PER_PAGE)
+  const paginatedRows = filteredRows.slice((currentRowsPage - 1) * ITEMS_PER_PAGE, currentRowsPage * ITEMS_PER_PAGE)
 
   const pendingCount  = logs.filter(l => l.status === "pending_verification").length
   const verifiedCount = logs.filter(l => l.status === "verified").length
@@ -216,11 +227,11 @@ export default function PaymentLogsPage({
                 <Input
                   placeholder="Search student..."
                   value={search}
-                  onChange={e => setSearch(e.target.value)}
+                  onChange={e => { setSearch(e.target.value); setCurrentLogsPage(1); setCurrentRowsPage(1) }}
                   className="pl-8 w-48"
                 />
               </div>
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <Select value={filterStatus} onValueChange={v => { setFilterStatus(v); setCurrentLogsPage(1); setCurrentRowsPage(1) }}>
                 <SelectTrigger className="w-44">
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -249,137 +260,196 @@ export default function PaymentLogsPage({
           {/* ── SUBMISSIONS VIEW ── */}
           {dataView === "submissions" && (
             viewMode === "table" ? (
-              <div className="rounded-md border border-border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Student ID</TableHead>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Amount Paid</TableHead>
-                      <TableHead>Paid At</TableHead>
-                      <TableHead />
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredLogs.map(log => {
-                      const config = statusConfig[log.status]
-                      const Icon = config.icon
-                      return (
-                        <TableRow key={log.id}>
-                          <TableCell className="text-xs font-mono text-muted-foreground">
-                            {log.studentId}
-                          </TableCell>
-                          <TableCell className="text-sm font-medium text-foreground">
-                            {log.studentName}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={config.variant} className="flex items-center gap-1 w-fit text-xs">
-                              <Icon className="size-3" />
-                              {config.label}
+              <>
+                <div className="rounded-md border border-border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student ID</TableHead>
+                        <TableHead>Full Name</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Amount Paid</TableHead>
+                        <TableHead>Paid At</TableHead>
+                        <TableHead />
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedLogs.map(log => {
+                        const config = statusConfig[log.status]
+                        const Icon = config.icon
+                        return (
+                          <TableRow key={log.id}>
+                            <TableCell className="text-xs font-mono text-muted-foreground">{log.studentId}</TableCell>
+                            <TableCell className="text-sm font-medium text-foreground">{log.studentName}</TableCell>
+                            <TableCell>
+                              <Badge variant={config.variant} className="flex items-center gap-1 w-fit text-xs">
+                                <Icon className="size-3" />{config.label}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm font-medium">₱{log.amountPaid.toLocaleString()}</TableCell>
+                            <TableCell className="text-xs text-muted-foreground">{log.paidAt}</TableCell>
+                            <TableCell>
+                              <Button size="sm" variant="outline" onClick={() => openDetail(log)}>
+                                <Eye className="size-3 mr-1" /> View Details
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                      {paginatedLogs.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">No payment submissions found</TableCell>
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+                <DataPagination
+                  currentPage={currentLogsPage}
+                  totalPages={totalLogsPages}
+                  totalItems={filteredLogs.length}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  onPageChange={setCurrentLogsPage}
+                />
+              </>
+            ) : (
+              <>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {paginatedLogs.map(log => {
+                    const config = statusConfig[log.status]
+                    const Icon = config.icon
+                    return (
+                      <Card key={log.id} className="border-border">
+                        <CardContent className="pt-4 pb-3">
+                          <div className="flex items-start justify-between gap-2 mb-3">
+                            <div>
+                              <p className="text-sm font-medium text-foreground">{log.studentName}</p>
+                              <p className="text-xs font-mono text-muted-foreground">{log.studentId}</p>
+                            </div>
+                            <Badge variant={config.variant} className="flex items-center gap-1 text-xs shrink-0">
+                              <Icon className="size-3" />{config.label}
                             </Badge>
-                          </TableCell>
-                          <TableCell className="text-sm font-medium">
-                            ₱{log.amountPaid.toLocaleString()}
-                          </TableCell>
-                          <TableCell className="text-xs text-muted-foreground">{log.paidAt}</TableCell>
-                          <TableCell>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-bold text-foreground">₱{log.amountPaid.toLocaleString()}</span>
                             <Button size="sm" variant="outline" onClick={() => openDetail(log)}>
                               <Eye className="size-3 mr-1" /> View Details
                             </Button>
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                    {filteredLogs.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
-                          No payment submissions found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredLogs.map(log => {
-                  const config = statusConfig[log.status]
-                  const Icon = config.icon
-                  return (
-                    <Card key={log.id} className="border-border">
-                      <CardContent className="pt-4 pb-3">
-                        <div className="flex items-start justify-between gap-2 mb-3">
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{log.studentName}</p>
-                            <p className="text-xs font-mono text-muted-foreground">{log.studentId}</p>
                           </div>
-                          <Badge variant={config.variant} className="flex items-center gap-1 text-xs shrink-0">
-                            <Icon className="size-3" />
-                            {config.label}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-foreground">
-                            ₱{log.amountPaid.toLocaleString()}
-                          </span>
-                          <Button size="sm" variant="outline" onClick={() => openDetail(log)}>
-                            <Eye className="size-3 mr-1" /> View Details
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-                {filteredLogs.length === 0 && (
-                  <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-                    <p className="text-sm text-muted-foreground">No payment submissions found</p>
-                  </div>
-                )}
-              </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                  {paginatedLogs.length === 0 && (
+                    <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                      <p className="text-sm text-muted-foreground">No payment submissions found</p>
+                    </div>
+                  )}
+                </div>
+                <DataPagination
+                  currentPage={currentLogsPage}
+                  totalPages={totalLogsPages}
+                  totalItems={filteredLogs.length}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  onPageChange={setCurrentLogsPage}
+                />
+              </>
             )
           )}
 
           {/* ── ALL STUDENTS VIEW ── */}
           {dataView === "all-students" && (
             viewMode === "table" ? (
-              <div className="rounded-md border border-border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Student ID</TableHead>
-                      <TableHead>Full Name</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Amount Paid</TableHead>
-                      <TableHead>Paid At</TableHead>
-                      <TableHead />
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredRows.map(row => {
-                      const config = statusConfig[row.status]
-                      const Icon = config.icon
-                      return (
-                        <TableRow key={row.studentId}>
-                          <TableCell className="text-xs font-mono text-muted-foreground">
-                            {row.studentId}
+              <>
+                <div className="rounded-md border border-border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Student ID</TableHead>
+                        <TableHead>Full Name</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Amount Paid</TableHead>
+                        <TableHead>Paid At</TableHead>
+                        <TableHead />
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {paginatedRows.map(row => {
+                        const config = statusConfig[row.status]
+                        const Icon = config.icon
+                        return (
+                          <TableRow key={row.studentId}>
+                            <TableCell className="text-xs font-mono text-muted-foreground">
+                              {row.studentId}
+                            </TableCell>
+                            <TableCell className="text-sm font-medium text-foreground">
+                              {row.studentName}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant={config.variant} className="flex items-center gap-1 w-fit text-xs">
+                                <Icon className="size-3" />
+                                {config.label}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {row.log ? `₱${row.log.amountPaid.toLocaleString()}` : "—"}
+                            </TableCell>
+                            <TableCell className="text-xs text-muted-foreground">
+                              {row.log?.paidAt ?? "—"}
+                            </TableCell>
+                            <TableCell>
+                              {row.log ? (
+                                <Button size="sm" variant="outline" onClick={() => openDetail(row.log!)}>
+                                  <Eye className="size-3 mr-1" /> View Details
+                                </Button>
+                              ) : (
+                                <span className="text-xs text-muted-foreground">No submission</span>
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      })}
+                      {paginatedRows.length === 0 && (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
+                            No students found
                           </TableCell>
-                          <TableCell className="text-sm font-medium text-foreground">
-                            {row.studentName}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={config.variant} className="flex items-center gap-1 w-fit text-xs">
+                        </TableRow>
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
+                <DataPagination
+                  currentPage={currentRowsPage}
+                  totalPages={totalRowsPages}
+                  totalItems={filteredRows.length}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  onPageChange={setCurrentRowsPage}
+                />
+              </>
+            ) : (
+              <>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {paginatedRows.map(row => {
+                    const config = statusConfig[row.status]
+                    const Icon = config.icon
+                    return (
+                      <Card key={row.studentId} className="border-border">
+                        <CardContent className="pt-4 pb-3">
+                          <div className="flex items-start justify-between gap-2 mb-3">
+                            <div>
+                              <p className="text-sm font-medium text-foreground">{row.studentName}</p>
+                              <p className="text-xs font-mono text-muted-foreground">{row.studentId}</p>
+                            </div>
+                            <Badge variant={config.variant} className="flex items-center gap-1 text-xs shrink-0">
                               <Icon className="size-3" />
                               {config.label}
                             </Badge>
-                          </TableCell>
-                          <TableCell className="text-sm text-muted-foreground">
-                            {row.log ? `₱${row.log.amountPaid.toLocaleString()}` : "—"}
-                          </TableCell>
-                          <TableCell className="text-xs text-muted-foreground">
-                            {row.log?.paidAt ?? "—"}
-                          </TableCell>
-                          <TableCell>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-bold text-foreground">
+                              {row.log ? `₱${row.log.amountPaid.toLocaleString()}` : "—"}
+                            </span>
                             {row.log ? (
                               <Button size="sm" variant="outline" onClick={() => openDetail(row.log!)}>
                                 <Eye className="size-3 mr-1" /> View Details
@@ -387,60 +457,25 @@ export default function PaymentLogsPage({
                             ) : (
                               <span className="text-xs text-muted-foreground">No submission</span>
                             )}
-                          </TableCell>
-                        </TableRow>
-                      )
-                    })}
-                    {filteredRows.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={6} className="text-center py-12 text-muted-foreground">
-                          No students found
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </div>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredRows.map(row => {
-                  const config = statusConfig[row.status]
-                  const Icon = config.icon
-                  return (
-                    <Card key={row.studentId} className="border-border">
-                      <CardContent className="pt-4 pb-3">
-                        <div className="flex items-start justify-between gap-2 mb-3">
-                          <div>
-                            <p className="text-sm font-medium text-foreground">{row.studentName}</p>
-                            <p className="text-xs font-mono text-muted-foreground">{row.studentId}</p>
                           </div>
-                          <Badge variant={config.variant} className="flex items-center gap-1 text-xs shrink-0">
-                            <Icon className="size-3" />
-                            {config.label}
-                          </Badge>
-                        </div>
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-bold text-foreground">
-                            {row.log ? `₱${row.log.amountPaid.toLocaleString()}` : "—"}
-                          </span>
-                          {row.log ? (
-                            <Button size="sm" variant="outline" onClick={() => openDetail(row.log!)}>
-                              <Eye className="size-3 mr-1" /> View Details
-                            </Button>
-                          ) : (
-                            <span className="text-xs text-muted-foreground">No submission</span>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )
-                })}
-                {filteredRows.length === 0 && (
-                  <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
-                    <p className="text-sm text-muted-foreground">No students found</p>
-                  </div>
-                )}
-              </div>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                  {paginatedRows.length === 0 && (
+                    <div className="col-span-full flex flex-col items-center justify-center py-12 text-center">
+                      <p className="text-sm text-muted-foreground">No students found</p>
+                    </div>
+                  )}
+                </div>
+                <DataPagination
+                  currentPage={currentRowsPage}
+                  totalPages={totalRowsPages}
+                  totalItems={filteredRows.length}
+                  itemsPerPage={ITEMS_PER_PAGE}
+                  onPageChange={setCurrentRowsPage}
+                />
+              </>
             )
           )}
         </CardContent>
