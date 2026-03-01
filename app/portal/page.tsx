@@ -2,18 +2,15 @@ import Link from "next/link"
 import { AlertTriangle, ShieldCheck, Banknote, CalendarDays, ArrowRight, Check, Clock, X } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/src/components/ui/card"
 import { Badge } from "@/src/components/ui/badge"
-import { Button } from "@/src/components/ui/button"
-import { Progress } from "@/src/components/ui/progress"
 import {
   currentStudent,
   currentStudentFines,
-  currentStudentFees,
   currentStudentPaymentLogs,
   currentStudentClearance,
   currentStudentAttendance,
-  events,
 } from "./mock-data"
 import { cn } from "@/src/lib/utils"
+import { PageHeader } from "@/components/PageHeader"
 
 export default function PortalDashboard() {
   const unpaidFines = currentStudentFines.filter(f => f.status === "unpaid")
@@ -26,15 +23,11 @@ export default function PortalDashboard() {
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Welcome */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">
-          Welcome, {currentStudent.firstName}!
-        </h1>
-        <p className="text-sm text-muted-foreground">
-          {currentStudent.course} -- Year {currentStudent.yearLevel}, Section {currentStudent.section}
-        </p>
-      </div>
+      <PageHeader
+        title={`Welcome, ${currentStudent.firstName}!`}
+        context="2nd Semester · A.Y. 2025–2026"
+        description={`${currentStudent.program} — Year ${currentStudent.yearLevel}`}
+      />
 
       {/* Quick Status Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

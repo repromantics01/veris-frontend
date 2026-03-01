@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import { PortalNavbar } from "@/components/portal-navbar"
+import { PortalNavbar } from "@/components/PortalNavbar"
 
 export const metadata: Metadata = {
   title: "Student Portal",

@@ -13,10 +13,10 @@ import { useState } from "react"
 
 const navItems = [
   { label: "Dashboard", href: "/portal", icon: LayoutDashboard },
+  { label: "Events", href: "/portal/events", icon: CalendarDays },
+  { label: "Fees", href: "/portal/fees", icon: Banknote },
   { label: "Fines", href: "/portal/fines", icon: AlertTriangle },
   { label: "Clearance", href: "/portal/clearance", icon: ShieldCheck },
-  { label: "Fees", href: "/portal/fees", icon: Banknote },
-  { label: "Events", href: "/portal/events", icon: CalendarDays },
 ]
 
 export function PortalNavbar() {
@@ -29,10 +29,10 @@ export function PortalNavbar() {
         {/* Left: Logo + Nav */}
         <div className="flex items-center gap-6">
           <Link href="/portal" className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-              <Shield className="size-3.5 text-primary-foreground" />
+            <div className="flex size-7 items-center justify-center rounded-md bg-transparent">
+              <img src="/ussc-logo-1.webp" alt="USSC Logo" className="h-auto" />
             </div>
-            <span className="text-sm font-semibold text-foreground">Atlas Portal</span>
+            <span className="text-sm font-semibold text-foreground">USSC Connect Student Portal</span>
           </Link>
 
           {/* Desktop nav */}
