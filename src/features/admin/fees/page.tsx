@@ -280,7 +280,7 @@ export default function FeesPage() {
               </Label>
               <Input
                 id="fee-title"
-                placeholder="e.g. 2nd Semester Membership Fee"
+                placeholder="e.g. 2nd Semester USSC Membership Fee"
                 value={newTitle}
                 onChange={e => setNewTitle(e.target.value)}
               />
@@ -307,10 +307,8 @@ export default function FeesPage() {
                   <SelectValue placeholder="Select fee type" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="semester-membership">Semester Membership</SelectItem>
-                  <SelectItem value="event-fee">Event Fee</SelectItem>
-                  <SelectItem value="charity-fee">Charity Fee</SelectItem>
-                  <SelectItem value="organization-dues">Organization Dues</SelectItem>
+                  <SelectItem value="semestral-membership">Semester Membership</SelectItem>
+                  <SelectItem value="organization-fee">Organization Fee</SelectItem>
                 </SelectContent>
               </Select>
             </div>

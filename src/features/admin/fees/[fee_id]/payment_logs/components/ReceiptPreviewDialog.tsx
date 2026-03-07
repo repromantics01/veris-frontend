@@ -120,7 +120,7 @@ export default function ReceiptPreviewDialog({
               className="mx-auto mb-2"
             />
             <p className="font-bold text-lg">University Supreme Student Council</p>
-            <p className="text-xs">Visayas State University Main Campus</p>
+            <p className="text-xs">Visayas State University - Baybay Main Campus</p>
             <p className="text-xs text-muted-foreground">
               Official Payment Receipt
             </p>

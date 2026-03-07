@@ -5,7 +5,7 @@ import {
   AlertTriangle, Eye,
   ChevronRight, Banknote, Users, CircleDollarSign,
   CalendarIcon, ClockIcon, UserIcon, ShieldCheckIcon, MessageSquareIcon,
-  CheckIcon, XIcon, PenLine,
+  CheckIcon, XIcon, PenLine, Receipt,
 } from "lucide-react"
 import { Button } from "@/src/components/ui/button"
 import { PageHeader } from "@/components/shared/PageHeader"
@@ -28,10 +28,12 @@ import { Separator } from "@/src/components/ui/separator"
 import { Textarea } from "@/src/components/ui/textarea"
 import { studentFineRecords as initialRecords } from "./mock-data"
 import { PaymentReviewDialog } from "@/components/shared/PaymentReviewDialog"
+import FineReceiptDialog from "./components/FineReceiptDialog"
 import type { StudentFineRecord, FineItem, StudentFineStatus } from "./types"
 import { toast } from "sonner"
 import { StatCard } from "@/components/shared/StatCard"
 import { DataPagination } from "@/components/shared/DataPagination"
+import { Tabs, TabsList, TabsTrigger } from "@/src/components/ui/tabs"
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 // All helpers operate at the StudentFineRecord level because payment is
@@ -139,6 +141,11 @@ export default function FinesPage() {
   const [manualPayDate, setManualPayDate] = useState(new Date().toISOString().slice(0, 10))
   const [manualPayNotes, setManualPayNotes] = useState("")
 
+  // Tab + receipt state
+  const [dataView, setDataView] = useState<"submissions" | "unpaid">("submissions")
+  const [receiptRecord, setReceiptRecord] = useState<StudentFineRecord | null>(null)
+  const [receiptOpen, setReceiptOpen] = useState(false)
+
   // ─ Derive live focused records from state ─
   const liveSelectedRecord = useMemo(
     () => records.find(r => r.studentId === selectedStudentId) ?? null,
@@ -167,7 +174,14 @@ export default function FinesPage() {
     [records],
   )
 
-  const filtered = summaries.filter(({ record, status }) => {
+  const filtered = summaries.filter(({ record, status, balance }) => {
+    // Tab filter
+    if (dataView === "submissions") {
+      if (!record.bulkPaymentSubmission) return false
+    } else {
+      // unpaid: no payment submission at all, with non-zero balance
+      if (record.bulkPaymentSubmission || balance === 0) return false
+    }
     const matchesSearch =
       record.studentName.toLowerCase().includes(search.toLowerCase()) ||
       record.studentId.toLowerCase().includes(search.toLowerCase())
@@ -194,6 +208,10 @@ export default function FinesPage() {
   const totalCollected   = summaries.reduce((s, r) => s + r.amountPaid, 0)
   const pendingCount     = summaries.filter(r => r.status === "pending" || r.status === "partial").length
 
+  // Tab counts
+  const submissionsCount  = summaries.filter(s => !!s.record.bulkPaymentSubmission).length
+  const unpaidFinesCount  = summaries.filter(s => !s.record.bulkPaymentSubmission && s.balance > 0).length
+
   // ─ Handlers ─
   // Bulk payment is approved/declined at the record level — one decision settles all fines.
   function updateRecordPaymentStatus(studentId: string, status: "approved" | "declined", rejectionReason?: string) {
@@ -211,8 +229,17 @@ export default function FinesPage() {
   }
 
   function handleApprovePayment() {
-    if (!selectedStudentId) return
+    if (!selectedStudentId || !liveSelectedRecord?.bulkPaymentSubmission) return
+    const updatedRecord: StudentFineRecord = {
+      ...liveSelectedRecord,
+      bulkPaymentSubmission: {
+        ...liveSelectedRecord.bulkPaymentSubmission,
+        status: "approved" as const,
+      },
+    }
     updateRecordPaymentStatus(selectedStudentId, "approved")
+    setReceiptRecord(updatedRecord)
+    setReceiptOpen(true)
     toast.success("Bulk payment approved — all fines settled")
   }
 
@@ -259,21 +286,24 @@ export default function FinesPage() {
     e.preventDefault()
     if (!selectedStudentId || !liveSelectedRecord) return
     const balance = computeBalance(liveSelectedRecord)
-    setRecords(prev => prev.map(r => {
-      if (r.studentId !== selectedStudentId) return r
-      return {
-        ...r,
-        bulkPaymentSubmission: {
-          id: `manual-${Date.now()}`,
-          receiptImage: "",
-          amountPaid: balance,
-          paymentMethod: manualPayMethod,
-          ...(manualPayMethod === "gcash" && manualPayRef ? { gcashReferenceNumber: manualPayRef } : {}),
-          dateOfPayment: manualPayDate,
-          status: "approved" as const,
-        },
-      }
-    }))
+    const newSubmission = {
+      id: `manual-${Date.now()}`,
+      receiptImage: "",
+      amountPaid: balance,
+      paymentMethod: manualPayMethod,
+      ...(manualPayMethod === "gcash" && manualPayRef ? { gcashReferenceNumber: manualPayRef } : {}),
+      dateOfPayment: manualPayDate,
+      status: "approved" as const,
+    }
+    const updatedRecord: StudentFineRecord = {
+      ...liveSelectedRecord,
+      bulkPaymentSubmission: newSubmission,
+    }
+    setRecords(prev => prev.map(r =>
+      r.studentId === selectedStudentId ? updatedRecord : r,
+    ))
+    setReceiptRecord(updatedRecord)
+    setReceiptOpen(true)
     toast.success("Manual payment logged — fines marked as paid")
     setManualPayOpen(false)
     setManualPayMethod("cash")
@@ -326,12 +356,31 @@ export default function FinesPage() {
 
       {/* Main Card */}
       <Card className="border-border">
+        <div className="mt-5 mx-5 w-full">
+            <Tabs
+              value={dataView}
+              onValueChange={v => {
+                setDataView(v as "submissions" | "unpaid")
+                setCurrentPage(1)
+                setFilterStatus("all")
+                setFilterAppeal("all")
+              }}
+            >
+              <TabsList className="w-full flex-1">
+                <TabsTrigger value="submissions">Payment Submissions</TabsTrigger>
+                <TabsTrigger value="unpaid">Unpaid</TabsTrigger>
+              </TabsList>
+            </Tabs>
+            </div>
         <CardHeader>
+          <div className="flex flex-col gap-4">
+            
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <CardTitle className="text-base text-foreground">Student Fine Records</CardTitle>
               <CardDescription className="text-muted-foreground">{filtered.length} student(s) found</CardDescription>
             </div>
+          </div>
             <div className="flex flex-wrap items-center gap-2">
               <SearchInput
                 placeholder="Search by name or ID..."
@@ -376,10 +425,16 @@ export default function FinesPage() {
                   <TableRow className="border-border hover:bg-transparent">
                     <TableHead>Student</TableHead>
                     <TableHead className="text-center"># Fines</TableHead>
-                    <TableHead className="text-right">Total Amount</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Amount Paid</TableHead>
-                    <TableHead className="text-right">Balance</TableHead>
+                    {dataView === "submissions" ? (
+                      <>
+                        <TableHead className="text-right">Total Amount</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Amount Paid</TableHead>
+                        <TableHead className="text-right">Balance</TableHead>
+                      </>
+                    ) : (
+                      <TableHead className="text-right">Outstanding Balance</TableHead>
+                    )}
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -394,45 +449,71 @@ export default function FinesPage() {
                             <span className="text-xs text-muted-foreground">{record.studentId}</span>
                           </div>
                         </TableCell>
-                        <TableCell className="text-center text-sm">{record.fineItems.length}</TableCell>
-                        <TableCell className="text-right text-sm font-medium">₱{total.toLocaleString()}</TableCell>
-                        <TableCell>
-                          <div className="flex flex-wrap gap-1">
-                            <Badge variant={cfg.variant} className="capitalize">{cfg.label}</Badge>
-                            {badges.waivedCount > 0 && (
-                              <Badge variant="outline" className="text-xs gap-1">
-                                {badges.waivedCount} Waived
-                              </Badge>
-                            )}
-                            {badges.pendingAppeals > 0 && (
-                              <Badge variant="default" className="text-xs">
-                                {badges.pendingAppeals} Appeal{badges.pendingAppeals !== 1 ? "s" : ""} Pending
-                              </Badge>
-                            )}
-                            {badges.rejectedAppeals > 0 && (
-                              <Badge variant="destructive" className="text-xs">
-                                {badges.rejectedAppeals} Appeal{badges.rejectedAppeals !== 1 ? "s" : ""} Rejected
-                              </Badge>
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className="text-right text-sm text-muted-foreground">₱{amountPaid.toLocaleString()}</TableCell>
-                        <TableCell className="text-right text-sm font-medium">₱{balance.toLocaleString()}</TableCell>
+                        <TableCell className="text-center text-sm">{record.fineItems.filter(i => !i.isWaived).length}</TableCell>
+                        {dataView === "submissions" ? (
+                          <>
+                            <TableCell className="text-right text-sm font-medium">₱{total.toLocaleString()}</TableCell>
+                            <TableCell>
+                              <div className="flex flex-wrap gap-1">
+                                <Badge variant={cfg.variant} className="capitalize">{cfg.label}</Badge>
+                                {badges.waivedCount > 0 && (
+                                  <Badge variant="outline" className="text-xs gap-1">
+                                    {badges.waivedCount} Waived
+                                  </Badge>
+                                )}
+                                {badges.pendingAppeals > 0 && (
+                                  <Badge variant="default" className="text-xs">
+                                    {badges.pendingAppeals} Appeal{badges.pendingAppeals !== 1 ? "s" : ""} Pending
+                                  </Badge>
+                                )}
+                                {badges.rejectedAppeals > 0 && (
+                                  <Badge variant="destructive" className="text-xs">
+                                    {badges.rejectedAppeals} Appeal{badges.rejectedAppeals !== 1 ? "s" : ""} Rejected
+                                  </Badge>
+                                )}
+                              </div>
+                            </TableCell>
+                            <TableCell className="text-right text-sm text-muted-foreground">₱{amountPaid.toLocaleString()}</TableCell>
+                            <TableCell className="text-right text-sm font-medium">₱{balance.toLocaleString()}</TableCell>
+                          </>
+                        ) : (
+                          <TableCell className="text-right text-sm font-medium">₱{balance.toLocaleString()}</TableCell>
+                        )}
                         <TableCell className="text-right">
-                          <Button
-                            size="sm" variant="outline"
-                            className="gap-1.5 text-xs"
-                            onClick={() => openBreakdown(record.studentId)}
-                          >
-                            <Eye className="size-3.5" /> View Details
-                          </Button>
+                          <div className="flex justify-end gap-2">
+                            {dataView === "unpaid" && (
+                              <Button
+                                size="sm" variant="outline"
+                                className="gap-1.5 text-xs border-green-500/40 text-green-700 hover:bg-green-50 hover:text-green-800 dark:text-green-400 dark:border-green-500/30 dark:hover:bg-green-950"
+                                onClick={() => { setSelectedStudentId(record.studentId); setManualPayOpen(true) }}
+                              >
+                                <PenLine className="size-3.5" /> Log Payment
+                              </Button>
+                            )}
+                            {dataView === "submissions" && record.bulkPaymentSubmission?.status === "approved" && (
+                              <Button
+                                size="sm" variant="outline"
+                                className="gap-1.5 text-xs"
+                                onClick={() => { setReceiptRecord(record); setReceiptOpen(true) }}
+                              >
+                                <Receipt className="size-3.5" /> Receipt
+                              </Button>
+                            )}
+                            <Button
+                              size="sm" variant="outline"
+                              className="gap-1.5 text-xs"
+                              onClick={() => openBreakdown(record.studentId)}
+                            >
+                              <Eye className="size-3.5" /> View Details
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     )
                   })}
                   {paginated.length === 0 && (
                     <TableRow>
-                      <TableCell colSpan={7} className="py-8 text-center text-sm text-muted-foreground">
+                      <TableCell colSpan={dataView === "submissions" ? 7 : 4} className="py-8 text-center text-sm text-muted-foreground">
                         No records found.
                       </TableCell>
                     </TableRow>
@@ -462,51 +543,90 @@ export default function FinesPage() {
                           <p className="text-xs text-muted-foreground">{record.studentId}</p>
                         </div>
                         <div className="flex flex-wrap justify-end gap-1 shrink-0">
-                          <Badge variant={cfg.variant} className="capitalize">{cfg.label}</Badge>
-                          {badges.waivedCount > 0 && (
-                            <Badge variant="outline" className="text-xs">
-                              {badges.waivedCount} Waived
-                            </Badge>
-                          )}
-                          {badges.pendingAppeals > 0 && (
-                            <Badge variant="default" className="text-xs">
-                              {badges.pendingAppeals} Appeal{badges.pendingAppeals !== 1 ? "s" : ""} Pending
-                            </Badge>
-                          )}
-                          {badges.rejectedAppeals > 0 && (
-                            <Badge variant="destructive" className="text-xs">
-                              {badges.rejectedAppeals} Appeal{badges.rejectedAppeals !== 1 ? "s" : ""} Rejected
-                            </Badge>
+                          {dataView === "submissions" ? (
+                            <>
+                              <Badge variant={cfg.variant} className="capitalize">{cfg.label}</Badge>
+                              {badges.waivedCount > 0 && (
+                                <Badge variant="outline" className="text-xs">
+                                  {badges.waivedCount} Waived
+                                </Badge>
+                              )}
+                              {badges.pendingAppeals > 0 && (
+                                <Badge variant="default" className="text-xs">
+                                  {badges.pendingAppeals} Appeal{badges.pendingAppeals !== 1 ? "s" : ""} Pending
+                                </Badge>
+                              )}
+                              {badges.rejectedAppeals > 0 && (
+                                <Badge variant="destructive" className="text-xs">
+                                  {badges.rejectedAppeals} Appeal{badges.rejectedAppeals !== 1 ? "s" : ""} Rejected
+                                </Badge>
+                              )}
+                            </>
+                          ) : (
+                            <Badge variant="outline">Unpaid</Badge>
                           )}
                         </div>
                       </div>
                       <Separator />
-                      <div className="grid grid-cols-2 gap-2 text-xs">
-                        <div>
-                          <p className="text-muted-foreground"># Fines</p>
-                          <p className="font-medium">{record.fineItems.length}</p>
+                      {dataView === "submissions" ? (
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-muted-foreground"># Fines</p>
+                            <p className="font-medium">{record.fineItems.filter(i => !i.isWaived).length}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Total Amount</p>
+                            <p className="font-medium">₱{total.toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Amount Paid</p>
+                            <p className="font-medium">₱{amountPaid.toLocaleString()}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Balance</p>
+                            <p className="font-medium">₱{balance.toLocaleString()}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-muted-foreground">Total Amount</p>
-                          <p className="font-medium">₱{total.toLocaleString()}</p>
+                      ) : (
+                        <div className="grid grid-cols-2 gap-2 text-xs">
+                          <div>
+                            <p className="text-muted-foreground"># Outstanding Fines</p>
+                            <p className="font-medium">{record.fineItems.filter(i => !i.isWaived).length}</p>
+                          </div>
+                          <div>
+                            <p className="text-muted-foreground">Outstanding Balance</p>
+                            <p className="font-medium">₱{balance.toLocaleString()}</p>
+                          </div>
                         </div>
-                        <div>
-                          <p className="text-muted-foreground">Amount Paid</p>
-                          <p className="font-medium">₱{amountPaid.toLocaleString()}</p>
-                        </div>
-                        <div>
-                          <p className="text-muted-foreground">Balance</p>
-                          <p className="font-medium">₱{balance.toLocaleString()}</p>
-                        </div>
+                      )}
+                      <div className="flex flex-col gap-2 mt-1">
+                        {dataView === "unpaid" && (
+                          <Button
+                            size="sm" variant="outline"
+                            className="w-full gap-1.5 text-xs border-green-500/40 text-green-700 hover:bg-green-50 hover:text-green-800 dark:text-green-400 dark:border-green-500/30 dark:hover:bg-green-950"
+                            onClick={() => { setSelectedStudentId(record.studentId); setManualPayOpen(true) }}
+                          >
+                            <PenLine className="size-3.5" /> Log Manual Payment
+                          </Button>
+                        )}
+                        {dataView === "submissions" && record.bulkPaymentSubmission?.status === "approved" && (
+                          <Button
+                            size="sm" variant="outline"
+                            className="w-full gap-1.5 text-xs"
+                            onClick={() => { setReceiptRecord(record); setReceiptOpen(true) }}
+                          >
+                            <Receipt className="size-3.5" /> View Receipt
+                          </Button>
+                        )}
+                        <Button
+                          size="sm" variant="outline"
+                          className="w-full gap-1.5 text-xs"
+                          onClick={() => openBreakdown(record.studentId)}
+                        >
+                          <Eye className="size-3.5" /> View Details
+                          <ChevronRight className="ml-auto size-3.5" />
+                        </Button>
                       </div>
-                      <Button
-                        size="sm" variant="outline"
-                        className="mt-1 w-full gap-1.5 text-xs"
-                        onClick={() => openBreakdown(record.studentId)}
-                      >
-                        <Eye className="size-3.5" /> View Details
-                        <ChevronRight className="ml-auto size-3.5" />
-                      </Button>
                     </CardContent>
                   </Card>
                 )
@@ -888,6 +1008,21 @@ export default function FinesPage() {
               </Button>
             </div>
           )}
+
+          {/* View receipt for approved payments */}
+          {liveSelectedRecord?.bulkPaymentSubmission?.status === "approved" && (
+            <div className="flex justify-end mt-2">
+              <Button
+                size="sm"
+                variant="outline"
+                className="gap-1.5"
+                onClick={() => { setReceiptRecord(liveSelectedRecord); setReceiptOpen(true) }}
+              >
+                <Receipt className="size-3.5" />
+                View Receipt
+              </Button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
@@ -1020,7 +1155,7 @@ export default function FinesPage() {
                 </p>
               </div>
             )}
-            <div className="flex flex-col gap-1.5">
+            {/* <div className="flex flex-col gap-1.5">
               <Label htmlFor="manualPayMethod">Payment Method <span className="text-destructive">*</span></Label>
               <Select value={manualPayMethod} onValueChange={setManualPayMethod}>
                 <SelectTrigger id="manualPayMethod">
@@ -1043,7 +1178,7 @@ export default function FinesPage() {
                   onChange={e => setManualPayRef(e.target.value)}
                 />
               </div>
-            )}
+            )} */}
             <div className="flex flex-col gap-1.5">
               <Label htmlFor="manualPayDate">Date of Payment <span className="text-destructive">*</span></Label>
               <Input
@@ -1094,6 +1229,13 @@ export default function FinesPage() {
         } : null}
         onApprove={handleApprovePayment}
         onReject={handleRejectPayment}
+      />
+
+      {/* ── Receipt Preview ───────────────────────────────────────────── */}
+      <FineReceiptDialog
+        open={receiptOpen}
+        onOpenChange={setReceiptOpen}
+        record={receiptRecord}
       />
     </div>
   )
