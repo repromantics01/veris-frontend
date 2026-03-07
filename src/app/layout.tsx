@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next"
-import { Poppins } from "next/font/google"
+import { Montserrat } from "next/font/google"
 import { ThemeProvider } from "@/src/components/ui/theme-provider"
 import { Toaster } from "@/src/components/ui/sonner"
 import "./globals.css"
 
-const poppins = Poppins({
+const montserrat = Montserrat({
   variable: "--font-sans",
   subsets: ["latin"],
   weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${poppins.variable} font-sans antialiased`}
+        className={`${montserrat.variable} font-sans antialiased`}
         suppressHydrationWarning
       >
         <ThemeProvider

@@ -141,13 +141,13 @@ function NavContent({
                   <p className="truncate text-[10px] text-sidebar-foreground/50">admin@ussc.edu.ph</p>
                 </div>
               )}
-              {!collapsed && <ModeToggle />}
+              {/* {!collapsed && <ModeToggle />} */}
             </div>
-            {collapsed && (
+            {/* {collapsed && (
               <div className="mt-1">
                 <ModeToggle />
               </div>
-            )}
+            )} */}
             {/* Sign out */}
             {collapsed ? (
               <Tooltip>
@@ -271,9 +271,9 @@ export function AdminSidebar() {
           </div>
         </div>
 
-        <div className="ml-auto">
+        {/* <div className="ml-auto">
           <ModeToggle />
-        </div>
+        </div> */}
       </div>
     </>
   )
