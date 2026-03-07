@@ -36,7 +36,7 @@ export const clearances: Clearance[] = [
         { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "pending", items: [
-        { label: "Absence Fine — General Assembly 2024", amount: 50, status: "pending",
+        { label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50, status: "pending",
           pendingPayment: { method: "GCash", referenceNo: "GC-2025-084321", amountPaid: 50, submittedAt: "Jan 28, 2026" } },
       ]},
     ],
@@ -104,7 +104,7 @@ export const clearances: Clearance[] = [
         { label: "Community Outreach Fund", amount: 50, status: "not-cleared" },
       ]},
       { name: "Fines", status: "not-cleared", items: [
-        { label: "Absence Fine — General Assembly 2024", amount: 50, status: "not-cleared" },
+        { label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50, status: "not-cleared" },
       ]},
     ],
   },
@@ -141,12 +141,12 @@ export const clearances: Clearance[] = [
             method: "GCash", referenceNo: "GC-2026-019452", amountPaid: 100, submittedAt: "Feb 25, 2026",
             coveredItems: [
               { reqName: "Fees",  label: "Community Outreach Fund", amount: 50 },
-              { reqName: "Fines", label: "Absence Fine — General Assembly 2024", amount: 50 },
+              { reqName: "Fines", label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50 },
             ],
           } },
       ]},
       { name: "Fines", status: "pending", items: [
-        { label: "Absence Fine — General Assembly 2024", amount: 50, status: "pending" },
+        { label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50, status: "pending" },
       ]},
     ],
   },

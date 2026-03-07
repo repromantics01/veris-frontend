@@ -46,12 +46,12 @@ export default function EventsPage() {
     setCurrentPage,
   } = useEventsFiltering(events)
 
-  const completedEvents = events.filter((e) => e.status === "completed" || e.status === "ongoing")
-  const totalAttendees = completedEvents.reduce((s, e) => s + e.attendees, 0)
-  const avgAttendance =
-    completedEvents.length > 0
-      ? Math.round(completedEvents.reduce((s, e) => s + e.attendees, 0) / completedEvents.length)
-      : 0
+  // const completedEvents = events.filter((e) => e.status === "completed" || e.status === "ongoing")
+  // const totalAttendees = completedEvents.reduce((s, e) => s + e.attendees, 0)
+  // const avgAttendance =
+  //   completedEvents.length > 0
+  //     ? Math.round(completedEvents.reduce((s, e) => s + e.attendees, 0) / completedEvents.length)
+  //     : 0
 
   const handleEventsUpdate = () => {
     setEvents((prev) => [...prev])
@@ -72,11 +72,11 @@ export default function EventsPage() {
       />
 
       {/* Stat cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
+      {/* <div className="grid gap-4 sm:grid-cols-3">
         <StatCard title="Total Events" value={events.length} description="This semester" icon={CalendarDays} />
         <StatCard title="Total Attendees" value={totalAttendees} description="Across all events" icon={Users} />
         <StatCard title="Avg. Attendees" value={avgAttendance} description="Per completed event" icon={Clock} />
-      </div>
+      </div> */}
 
       {/* Search bar */}
       <div className="relative">

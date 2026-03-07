@@ -16,7 +16,7 @@ export const payments: Payment[] = [
     status: "pending",
     submittedDate: "2024-11-28",
     lineItems: [
-      { type: "fine", referenceId: "fi1",    name: "Absence Fine — General Assembly 2024",  amount: 50 },
+      { type: "fine", referenceId: "fi1",    name: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026",  amount: 50 },
       { type: "fee",  referenceId: "fee-2",  name: "Community Outreach Charity Fee",          amount: 50 },
     ],
   },
@@ -67,7 +67,7 @@ export const payments: Payment[] = [
     status: "pending",
     submittedDate: "2024-11-29",
     lineItems: [
-      { type: "fine", referenceId: "fi4",   name: "Absence Fine — General Assembly 2024", amount: 50 },
+      { type: "fine", referenceId: "fi4",   name: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50 },
       { type: "fine", referenceId: "fi5",   name: "Absence Fine — USSC Welcome Party",    amount: 50 },
       { type: "fee",  referenceId: "fee-1", name: "1st Semester Membership Fee (retry)",   amount: 150 },
     ],

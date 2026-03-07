@@ -61,7 +61,7 @@ export function PortalNavbar() {
         {/* Right: User info + actions */}
         <div className="flex items-center gap-3">
           <div className="[&>button]:border-white/20 [&>button]:bg-white/10 [&>button]:text-primary-foreground hover:[&>button]:bg-white/20">
-            <ModeToggle />
+            {/* <ModeToggle /> */}
           </div>
           <div className="hidden items-center gap-2 sm:flex">
             <Avatar className="size-7">

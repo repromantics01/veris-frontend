@@ -28,10 +28,8 @@ import type { FeeType } from "../fees/types"
 import { toast } from "sonner"
 
 const feeTypeLabels: Record<FeeType, string> = {
-  "semester-membership": "Semester Membership",
-  "event-fee":           "Event Fee",
-  "charity-fee":         "Charity Fee",
-  "organization-dues":   "Organization Dues",
+  "semestral-membership": "Semester Membership",
+  "organization-fee":   "Organization Fee",
 }
 
 const statusConfig: Record<ClearanceItemStatus, { icon: typeof Check; color: string; bgColor: string; iconBg: string }> = {

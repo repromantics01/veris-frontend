@@ -20,10 +20,8 @@ const ITEMS_PER_PAGE = 10
 type StudentFeeStatus = "paid" | "pending" | "rejected" | "unpaid"
 
 const feeTypeLabels: Record<FeeType, string> = {
-  "semester-membership": "Semester Membership",
-  "event-fee":           "Event Fee",
-  "charity-fee":         "Charity Fee",
-  "organization-dues":   "Organization Dues",
+  "semestral-membership": "Semester Membership",
+  "organization-fee":   "Organization Fee",
 }
 
 const statusConfig: Record<

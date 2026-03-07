@@ -91,7 +91,7 @@ export function AddEventDialog({ open, onOpenChange, onEventAdded }: AddEventDia
             </label>
             <Input
               id="ev-name"
-              placeholder="e.g. General Assembly"
+              placeholder="e.g. State of the Student Address"
               value={name}
               onChange={(e) => setName(e.target.value)}
               disabled={loading}
