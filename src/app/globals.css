@@ -164,11 +164,57 @@
 }
 
 @layer utilities {
-  /* Portal pages get a very subtle warm-green tinted background */
+  /* Portal pages — institutional White-on-Gray workspace */
   .portal-bg {
-    background-color: oklch(0.983 0.010 142);
+    background-color: #F5F5F5;
+    --background: #F5F5F5;
+    --foreground: #212121;
+    --primary: #1B5E20;
+    --primary-foreground: #ffffff;
+    --secondary: #C8E6C9;
+    --secondary-foreground: #1B5E20;
+    --success: #8BC34A;
+    --success-foreground: #1B5E20;
+    --card: #ffffff;
+    --card-foreground: #212121;
+    --popover: #ffffff;
+    --popover-foreground: #212121;
+    --border: #E0E0E0;
+    --input: #E0E0E0;
+    --muted: #EEEEEE;
+    --muted-foreground: #616161;
+    --accent: #F5F5F5;
+    --accent-foreground: #1B5E20;
+    --ring: #1B5E20;
   }
   .dark .portal-bg {
+    background-color: oklch(0.13 0.045 148);
+  }
+
+  /* Admin pages — institutional White-on-Gray workspace */
+  .admin-bg {
+    background-color: #F5F5F5;
+    --background: #F5F5F5;
+    --foreground: #212121;
+    --primary: #1B5E20;
+    --primary-foreground: #ffffff;
+    --secondary: #C8E6C9;
+    --secondary-foreground: #1B5E20;
+    --success: #8BC34A;
+    --success-foreground: #1B5E20;
+    --card: #ffffff;
+    --card-foreground: #212121;
+    --popover: #ffffff;
+    --popover-foreground: #212121;
+    --border: #E0E0E0;
+    --input: #E0E0E0;
+    --muted: #EEEEEE;
+    --muted-foreground: #616161;
+    --accent: #F5F5F5;
+    --accent-foreground: #1B5E20;
+    --ring: #1B5E20;
+  }
+  .dark .admin-bg {
     background-color: oklch(0.13 0.045 148);
   }
 }
