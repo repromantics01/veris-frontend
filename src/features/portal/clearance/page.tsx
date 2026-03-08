@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import { ShieldCheck, Check, Clock, X, CreditCard } from "lucide-react"
 import { useState } from "react"
 import { PageHeader } from "@/components/shared/PageHeader"
@@ -28,7 +29,7 @@ import type { FeeType } from "../fees/types"
 import { toast } from "sonner"
 
 const feeTypeLabels: Record<FeeType, string> = {
-  "semestral-membership": "Semester Membership",
+  "semestral-membership": "Semestral Membership",
   "organization-fee":   "Organization Fee",
 }
 
@@ -138,10 +139,10 @@ export default function PortalClearancePage() {
 
   if (!clearance) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
-        <ShieldCheck className="size-12 text-muted-foreground" />
-        <h2 className="mt-4 text-lg font-semibold text-foreground">No Clearance Record</h2>
-        <p className="mt-1 text-sm text-muted-foreground">No clearance record found for the current semester.</p>
+      <div className="flex flex-col items-center justify-center py-16 text-center sm:py-20">
+        <ShieldCheck className="size-10 text-muted-foreground sm:size-12" />
+        <h2 className="mt-4 text-base font-bold uppercase tracking-wide text-foreground sm:text-lg">No Clearance Record</h2>
+        <p className="mt-1 text-xs text-muted-foreground sm:text-sm">No clearance record found for the current semester.</p>
       </div>
     )
   }
@@ -151,49 +152,50 @@ export default function PortalClearancePage() {
   const progressPct = Math.round((clearedCount / totalCount) * 100)
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5 sm:gap-6">
       <PageHeader
+        variant="portal"
         title="My Clearance"
         context={`${clearance.semester} · A.Y. ${clearance.academicYear}`}
         description="Track your clearance requirements for this semester"
       />
 
       {/* Overall Status Card */}
-      <Card className="border-border">
-        <CardContent className="pt-6">
+      <Card className="border-[#E0E0E0] bg-white shadow-sm">
+        <CardContent className="p-4 sm:pt-6">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 sm:gap-4">
               <div className={cn(
-                "flex size-14 items-center justify-center rounded-full",
-                clearance.overallStatus === "cleared"     ? "bg-success/10"     :
-                clearance.overallStatus === "not-cleared" ? "bg-destructive/10" : "bg-warning/10"
+                "flex size-11 shrink-0 items-center justify-center rounded-full sm:size-14",
+                clearance.overallStatus === "cleared"     ? "bg-[#8BC34A]/10"   :
+                clearance.overallStatus === "not-cleared" ? "bg-destructive/10" : "bg-[#1B5E20]/10"
               )}>
                 <ShieldCheck className={cn(
-                  "size-7",
-                  clearance.overallStatus === "cleared"     ? "text-success"     :
-                  clearance.overallStatus === "not-cleared" ? "text-destructive" : "text-warning"
+                  "size-5 sm:size-7",
+                  clearance.overallStatus === "cleared"     ? "text-[#8BC34A]"   :
+                  clearance.overallStatus === "not-cleared" ? "text-destructive" : "text-[#1B5E20]"
                 )} />
               </div>
               <div>
-                <h2 className="text-xl font-bold capitalize text-foreground">
+                <h2 className="text-base font-bold uppercase tracking-wide text-foreground sm:text-xl">
                   {clearance.overallStatus.replace("-", " ")}
                 </h2>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground sm:text-sm">
                   {clearedCount} of {totalCount} requirements completed
                 </p>
               </div>
             </div>
 
             <div className="flex flex-col items-start gap-3 sm:items-end">
-              <div className="w-full max-w-xs">
-                <div className="flex items-center justify-between text-sm">
+              <div className="w-full sm:max-w-xs">
+                <div className="flex items-center justify-between text-xs sm:text-sm">
                   <span className="text-muted-foreground">Progress</span>
                   <span className="font-medium text-foreground">{progressPct}%</span>
                 </div>
                 <Progress value={progressPct} className="mt-1 h-2" />
               </div>
               {payableItems.length > 0 && (
-                <Button onClick={openModal} size="sm">
+                <Button onClick={openModal} size="sm" className="w-full bg-[#1B5E20] text-white hover:bg-[#1B5E20]/90 font-semibold shadow-sm sm:w-auto">
                   <CreditCard className="size-4" />
                   Make Payment
                   <span className="ml-1 text-xs opacity-75">
@@ -207,27 +209,27 @@ export default function PortalClearancePage() {
       </Card>
 
       {/* Requirements */}
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-foreground">Requirements</h3>
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20]">Requirements</h3>
         {clearance.requirements.map(req => {
           const config = statusConfig[req.status]
           const Icon = config.icon
           return (
-            <Card key={req.name} className={cn("border", config.bgColor)}>
-              <CardContent className="py-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={cn("flex size-8 items-center justify-center rounded-full", config.iconBg)}>
-                      <Icon className="size-4" />
+            <Card key={req.name} className={cn("border transition-colors duration-150", config.bgColor)}>
+              <CardContent className="px-3 py-3 sm:py-4 sm:px-6">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2.5 sm:gap-3">
+                    <div className={cn("flex size-7 shrink-0 items-center justify-center rounded-full sm:size-8", config.iconBg)}>
+                      <Icon className="size-3.5 sm:size-4" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-foreground">{req.name}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{req.status.replace("-", " ")}</p>
+                      <p className="text-xs font-medium text-foreground sm:text-sm">{req.name}</p>
+                      <p className="text-[10px] text-muted-foreground capitalize sm:text-xs">{req.status.replace("-", " ")}</p>
                     </div>
                   </div>
                   <Badge
                     variant={req.status === "cleared" ? "secondary" : req.status === "not-cleared" ? "destructive" : "outline"}
-                    className="capitalize"
+                    className="shrink-0 capitalize text-[10px] sm:text-xs"
                   >
                     {req.status.replace("-", " ")}
                   </Badge>
@@ -240,9 +242,8 @@ export default function PortalClearancePage() {
 
       {/* Make Payment Dialog */}
       <Dialog open={modalOpen} onOpenChange={open => { setModalOpen(open); if (!open) setStep(1) }}>
-        <DialogContent className="max-w-2xl">
+        <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto sm:max-w-2xl">
 
-          {/* ── Step 1: Select items ───────────────────────────────────── */}
           {step === 1 && (
             <>
               <DialogHeader>
@@ -252,7 +253,7 @@ export default function PortalClearancePage() {
                 </DialogDescription>
               </DialogHeader>
 
-              <div className="flex max-h-80 flex-col gap-2 overflow-y-auto pr-1">
+              <div className="flex max-h-60 flex-col gap-2 overflow-y-auto pr-1 sm:max-h-80">
                 {payableItems.length === 0 ? (
                   <p className="py-8 text-center text-sm text-muted-foreground">
                     No outstanding items to pay.
@@ -275,9 +276,9 @@ export default function PortalClearancePage() {
                         onCheckedChange={() => toggleItem(item.id)}
                         className="mt-0.5 shrink-0"
                       />
-                      <div className="flex flex-1 items-start justify-between gap-2">
+                      <div className="flex flex-1 flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-2">
                         <div className="flex flex-col gap-1">
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
                             <Badge
                               variant={item.kind === "fine" ? "destructive" : "default"}
                               className="px-1.5 py-0 text-[10px] capitalize"
@@ -286,7 +287,7 @@ export default function PortalClearancePage() {
                             </Badge>
                             <span className="text-sm font-medium text-foreground">{item.label}</span>
                           </div>
-                          <span className="text-xs text-muted-foreground">{item.sublabel}</span>
+                          <span className="text-xs text-muted-foreground line-clamp-2">{item.sublabel}</span>
                         </div>
                         <span className="shrink-0 text-sm font-semibold text-foreground">
                           ₱{item.amount.toLocaleString()}
@@ -311,16 +312,15 @@ export default function PortalClearancePage() {
                 </>
               )}
 
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setModalOpen(false)}>Cancel</Button>
-                <Button onClick={handleNext} disabled={selectedIds.size === 0}>
+              <DialogFooter className="flex-col gap-2 sm:flex-row">
+                <Button variant="outline" onClick={() => setModalOpen(false)} className="w-full sm:w-auto">Cancel</Button>
+                <Button onClick={handleNext} disabled={selectedIds.size === 0} className="w-full bg-[#1B5E20] text-white hover:bg-[#1B5E20]/90 font-semibold shadow-sm sm:w-auto">
                   Next: Payment Details
                 </Button>
               </DialogFooter>
             </>
           )}
 
-          {/* ── Step 2: Payment details ────────────────────────────────── */}
           {step === 2 && (
             <>
               <DialogHeader>
@@ -332,8 +332,8 @@ export default function PortalClearancePage() {
 
               <form id="payment-form" onSubmit={handleSubmit} className="flex flex-col gap-4">
                 {/* Selected items summary */}
-                <div className="rounded-lg border border-border bg-muted/30 p-3">
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                <div className="rounded-lg border border-[#1B5E20]/10 bg-[#1B5E20]/2 p-3">
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-[#1B5E20]/60">
                     Items Being Paid
                   </p>
                   <div className="flex flex-col divide-y divide-border">
@@ -360,14 +360,18 @@ export default function PortalClearancePage() {
 
                 <Separator />
 
-                <div className="grid gap-4 md:grid-cols-2">
+                <div className="grid gap-4 sm:grid-cols-2">
                   {/* GCash info */}
                   <div className="flex flex-col gap-2">
                     <Label>Pay via GCash</Label>
-                    <div className="flex flex-col items-center gap-2 rounded-lg border border-border bg-background p-4 text-center">
-                      <div className="flex size-32 items-center justify-center rounded-md bg-muted text-xs text-muted-foreground">
-                        QR Code Placeholder
-                      </div>
+                    <div className="flex flex-col items-center gap-2 rounded-lg border border-[#1B5E20]/10 bg-[#1B5E20]/2 p-3 text-center sm:p-4">
+                      <Image
+                        src="/qr-code.png"
+                        alt="GCash QR Code"
+                        width={128}
+                        height={128}
+                        className="size-24 rounded-md sm:size-32"
+                      />
                       <p className="text-sm font-medium">{GCASH_ACCOUNT_NAME}</p>
                       <p className="text-xs text-muted-foreground">{GCASH_ACCOUNT_NUMBER}</p>
                     </div>
@@ -419,9 +423,9 @@ export default function PortalClearancePage() {
                 </div>
               </form>
 
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setStep(1)}>Back</Button>
-                <Button form="payment-form" type="submit">Submit Payment</Button>
+              <DialogFooter className="flex-col gap-2 sm:flex-row">
+                <Button variant="outline" onClick={() => setStep(1)} className="w-full sm:w-auto">Back</Button>
+                <Button form="payment-form" type="submit" className="w-full bg-[#1B5E20] text-white hover:bg-[#1B5E20]/90 font-semibold shadow-sm sm:w-auto">Submit Payment</Button>
               </DialogFooter>
             </>
           )}

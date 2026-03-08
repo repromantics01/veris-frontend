@@ -70,50 +70,51 @@ export default function PortalFinesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5 sm:gap-6">
       <PageHeader
+        variant="portal"
         title="My Fines"
         context="2nd Semester · A.Y. 2025–2026"
         description="View your fines and submit appeals for review"
       />
 
       {/* Summary Cards */}
-      <div className="grid gap-4 sm:grid-cols-3">
-        <Card className="border-border">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-full bg-destructive/10">
-                <AlertTriangle className="size-5 text-destructive" />
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <Card className="border-[#E0E0E0] bg-white shadow-sm transition-all duration-200 hover:shadow-md">
+          <CardContent className="p-3 sm:pt-6 sm:px-6">
+            <div className="flex flex-col items-center gap-1.5 text-center sm:flex-row sm:items-center sm:gap-3 sm:text-left">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-destructive/10 sm:size-10">
+                <AlertTriangle className="size-4 text-destructive sm:size-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">&#8369;{unpaidTotal.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Outstanding balance</p>
+                <p className="text-lg font-bold text-foreground sm:text-2xl">&#8369;{unpaidTotal.toLocaleString()}</p>
+                <p className="text-[10px] text-muted-foreground sm:text-xs">Outstanding balance</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-border">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-full bg-green-500/10">
-                <CheckCircle className="size-5 text-green-600" />
+        <Card className="border-[#E0E0E0] bg-white shadow-sm transition-all duration-200 hover:shadow-md">
+          <CardContent className="p-3 sm:pt-6 sm:px-6">
+            <div className="flex flex-col items-center gap-1.5 text-center sm:flex-row sm:items-center sm:gap-3 sm:text-left">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#8BC34A]/10 sm:size-10">
+                <CheckCircle className="size-4 text-[#8BC34A] sm:size-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">&#8369;{clearedTotal.toLocaleString()}</p>
-                <p className="text-xs text-muted-foreground">Cleared / waived</p>
+                <p className="text-lg font-bold text-foreground sm:text-2xl">&#8369;{clearedTotal.toLocaleString()}</p>
+                <p className="text-[10px] text-muted-foreground sm:text-xs">Cleared / waived</p>
               </div>
             </div>
           </CardContent>
         </Card>
-        <Card className="border-border">
-          <CardContent className="pt-6">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
-                <FileText className="size-5 text-primary" />
+        <Card className="border-[#E0E0E0] bg-white shadow-sm transition-all duration-200 hover:shadow-md">
+          <CardContent className="p-3 sm:pt-6 sm:px-6">
+            <div className="flex flex-col items-center gap-1.5 text-center sm:flex-row sm:items-center sm:gap-3 sm:text-left">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#1B5E20]/10 sm:size-10">
+                <FileText className="size-4 text-[#1B5E20] sm:size-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-foreground">{fineItems.length}</p>
-                <p className="text-xs text-muted-foreground">Total fine item(s)</p>
+                <p className="text-lg font-bold text-foreground sm:text-2xl">{fineItems.length}</p>
+                <p className="text-[10px] text-muted-foreground sm:text-xs">Total fine item(s)</p>
               </div>
             </div>
           </CardContent>
@@ -123,55 +124,55 @@ export default function PortalFinesPage() {
       {/* Bulk payment status banner */}
       {record?.bulkPaymentSubmission && (
         <div className={cn(
-          "flex items-start gap-3 rounded-md border px-4 py-3",
-          hasPendingSubmission ? "border-border bg-muted/30" :
+          "flex items-start gap-2 rounded-md border px-3 py-2.5 sm:gap-3 sm:px-4 sm:py-3",
+          hasPendingSubmission ? "border-[#1B5E20]/20 bg-[#1B5E20]/2" :
           hasDeclinedSubmission ? "border-destructive/40 bg-destructive/5" :
-          "border-green-500/40 bg-green-500/5",
+          "border-[#8BC34A]/40 bg-[#8BC34A]/5",
         )}>
           {hasPendingSubmission  && <Clock    className="mt-0.5 size-4 shrink-0 text-muted-foreground" />}
           {hasDeclinedSubmission && <XCircle  className="mt-0.5 size-4 shrink-0 text-destructive" />}
-          {bulkApproved          && <CheckCircle className="mt-0.5 size-4 shrink-0 text-green-600" />}
+          {bulkApproved          && <CheckCircle className="mt-0.5 size-4 shrink-0 text-[#8BC34A]" />}
           <div className="flex flex-col gap-0.5">
-            <p className="text-sm font-medium">
+            <p className="text-xs font-medium sm:text-sm">
               {hasPendingSubmission  && "Bulk payment submitted — awaiting admin review"}
               {hasDeclinedSubmission && "Bulk payment was declined"}
               {bulkApproved          && "Bulk payment approved — all fines cleared"}
             </p>
             {hasDeclinedSubmission && record.bulkPaymentSubmission.rejectionReason && (
-              <p className="text-xs text-destructive">Reason: {record.bulkPaymentSubmission.rejectionReason}</p>
+              <p className="text-[10px] text-destructive sm:text-xs">Reason: {record.bulkPaymentSubmission.rejectionReason}</p>
             )}
             {hasPendingSubmission && (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground sm:text-xs">
                 Ref: {record.bulkPaymentSubmission.gcashReferenceNumber} &middot; Submitted {record.bulkPaymentSubmission.dateOfPayment}
               </p>
             )}
             {hasDeclinedSubmission && (
-              <p className="text-xs text-destructive mt-1">Head to the Clearance page to resubmit payment.</p>
+              <p className="text-[10px] text-destructive mt-1 sm:text-xs">Head to the Clearance page to resubmit payment.</p>
             )}
           </div>
         </div>
       )}
 
       {/* Fines Table */}
-      <Card className="border-border">
-        <CardHeader>
-          <CardTitle className="text-base text-foreground">Fine History</CardTitle>
-          <CardDescription className="text-muted-foreground">
+      <Card className="border-[#E0E0E0] bg-white shadow-sm">
+        <CardHeader className="px-3 pb-2 pt-4 sm:px-6 sm:pb-3 sm:pt-6">
+          <CardTitle className="text-xs font-bold uppercase tracking-wider text-[#1B5E20]">Fine History</CardTitle>
+          <CardDescription className="text-[10px] text-[#1B5E20]/50 sm:text-xs">
             All fines associated with your account. Use the Appeal button to dispute a fine.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 pb-4 sm:px-6 sm:pb-6">
           {fineItems.length > 0 ? (
-            <div className="overflow-x-auto">
-              <Table>
+            <div className="-mx-3 overflow-x-auto sm:mx-0">
+              <Table className="text-xs sm:text-sm">
                 <TableHeader>
                   <TableRow>
-                    <TableHead className="w-8">#</TableHead>
-                    <TableHead>Fine</TableHead>
-                    <TableHead className="text-right">Amount</TableHead>
-                    <TableHead>Date Issued</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Appeal</TableHead>
+                    <TableHead className="w-8 whitespace-nowrap">#</TableHead>
+                    <TableHead className="whitespace-nowrap">Fine</TableHead>
+                    <TableHead className="whitespace-nowrap text-right">Amount</TableHead>
+                    <TableHead className="hidden whitespace-nowrap sm:table-cell">Date Issued</TableHead>
+                    <TableHead className="whitespace-nowrap">Status</TableHead>
+                    <TableHead className="whitespace-nowrap">Appeal</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -182,26 +183,26 @@ export default function PortalFinesPage() {
                     return (
                       <TableRow key={item.id}>
                         {/* # */}
-                        <TableCell className="text-sm text-muted-foreground">{item.itemNumber}</TableCell>
+                        <TableCell className="text-muted-foreground">{item.itemNumber}</TableCell>
 
                         {/* Fine name + reason */}
                         <TableCell>
-                          <p className="text-sm font-medium text-foreground">
+                          <p className="font-medium text-foreground">
                             {item.fineTypeName}
                             {item.eventName && (
                               <span className="ml-1 font-normal text-muted-foreground">— {item.eventName}</span>
                             )}
                           </p>
-                          <p className="mt-0.5 w-48 truncate text-xs text-muted-foreground" title={item.reason}>{item.reason}</p>
+                          <p className="mt-0.5 max-w-30 truncate text-[10px] text-muted-foreground sm:max-w-48 sm:text-xs" title={item.reason}>{item.reason}</p>
                         </TableCell>
 
                         {/* Amount */}
-                        <TableCell className="text-right text-sm font-medium text-foreground">
+                        <TableCell className="text-right font-medium text-foreground">
                           &#8369;{item.amount.toLocaleString()}
                         </TableCell>
 
                         {/* Date issued */}
-                        <TableCell className="text-sm text-muted-foreground">{item.issuedAt}</TableCell>
+                        <TableCell className="hidden text-muted-foreground sm:table-cell">{item.issuedAt}</TableCell>
 
                         {/* Status */}
                         <TableCell>
@@ -214,7 +215,7 @@ export default function PortalFinesPage() {
                             </Badge>
                           )}
                           {effectiveStatus === "appeal-approved" && (
-                            <Badge variant="secondary" className="border-green-500/40 bg-green-500/10 text-green-700 dark:text-green-400">
+                            <Badge variant="secondary" className="border-success/40 bg-success/10 text-success">
                               Appeal Approved
                             </Badge>
                           )}
@@ -289,12 +290,12 @@ export default function PortalFinesPage() {
               />
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <div className="flex size-12 items-center justify-center rounded-full bg-green-500/10">
-                <CheckCircle className="size-6 text-green-600" />
+            <div className="flex flex-col items-center justify-center py-8 text-center sm:py-12">
+              <div className="flex size-10 items-center justify-center rounded-full bg-[#8BC34A]/10 sm:size-12">
+                <CheckCircle className="size-5 text-[#8BC34A] sm:size-6" />
               </div>
-              <h3 className="mt-3 text-sm font-medium text-foreground">No fines</h3>
-              <p className="mt-1 text-xs text-muted-foreground">You have no fines on record. Keep it up!</p>
+              <h3 className="mt-3 text-xs font-medium text-foreground sm:text-sm">No fines</h3>
+              <p className="mt-1 text-[10px] text-muted-foreground sm:text-xs">You have no fines on record. Keep it up!</p>
             </div>
           )}
         </CardContent>
@@ -302,7 +303,7 @@ export default function PortalFinesPage() {
 
       {/* Appeal Dialog */}
       <Dialog open={!!appealItem} onOpenChange={open => { if (!open) setAppealItem(null) }}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-h-[90vh] max-w-[95vw] overflow-y-auto sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>
               {appealItem?.appeal?.status === "rejected" ? "Re-submit Appeal" : "Submit Appeal"}
@@ -313,17 +314,17 @@ export default function PortalFinesPage() {
           </DialogHeader>
 
           {appealItem && (
-            <form onSubmit={handleAppealSubmit} className="flex flex-col gap-4">
+            <form onSubmit={handleAppealSubmit} className="flex flex-col gap-3 sm:gap-4">
               {/* Fine summary */}
-              <div className="rounded-lg border border-border bg-muted/40 px-4 py-3">
-                <p className="text-sm font-medium text-foreground">
+              <div className="rounded-lg border border-[#1B5E20]/10 bg-[#1B5E20]/2 px-3 py-2.5 sm:px-4 sm:py-3">
+                <p className="text-xs font-medium text-foreground sm:text-sm">
                   {appealItem.fineTypeName}
                   {appealItem.eventName && (
                     <span className="ml-1 font-normal text-muted-foreground">— {appealItem.eventName}</span>
                   )}
                 </p>
-                <p className="mt-0.5 text-xs text-muted-foreground">{appealItem.reason}</p>
-                <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                <p className="mt-0.5 text-[10px] text-muted-foreground sm:text-xs">{appealItem.reason}</p>
+                <div className="mt-2 flex flex-col gap-1 text-[10px] text-muted-foreground sm:flex-row sm:items-center sm:gap-3 sm:text-xs">
                   <span>Issued: {appealItem.issuedAt}</span>
                   <span className="font-semibold text-foreground">&#8369;{appealItem.amount.toLocaleString()}</span>
                 </div>
@@ -375,11 +376,11 @@ export default function PortalFinesPage() {
                 </p>
               </div>
 
-              <DialogFooter>
-                <Button type="button" variant="outline" onClick={() => setAppealItem(null)}>
+              <DialogFooter className="flex-col gap-2 sm:flex-row sm:gap-0">
+                <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={() => setAppealItem(null)}>
                   Cancel
                 </Button>
-                <Button type="submit">Submit Appeal</Button>
+                <Button type="submit" className="w-full bg-[#8BC34A] text-[#1B5E20] hover:bg-[#7CB342] font-semibold sm:w-auto">Submit Appeal</Button>
               </DialogFooter>
             </form>
           )}

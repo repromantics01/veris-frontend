@@ -8,9 +8,11 @@ interface PageHeaderProps {
   /** Optional action element (e.g. a button) rendered on the right on sm+ screens */
   action?: ReactNode
   className?: string
+  /** Portal variant applies institutional gradient branding to the title */
+  variant?: "default" | "portal"
 }
 
-export function PageHeader({ title, context, description, action, className }: PageHeaderProps) {
+export function PageHeader({ title, context, description, action, className, variant = "default" }: PageHeaderProps) {
   return (
     <div
       className={cn(
@@ -20,12 +22,27 @@ export function PageHeader({ title, context, description, action, className }: P
       )}
     >
       <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
+        <h1
+          className={cn(
+            "text-2xl font-bold uppercase tracking-tight",
+            variant === "portal"
+              ? "bg-linear-to-r from-[#8BC34A] via-[#2E7D32] to-[#1B5E20] bg-clip-text text-transparent"
+              : "text-foreground",
+          )}
+        >
+          {title}
+        </h1>
         {context && (
-          <p className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{context}</p>
+          <p className={cn(
+            "text-xs font-medium uppercase tracking-wide",
+            variant === "portal" ? "text-[#1B5E20]/60" : "text-muted-foreground",
+          )}>{context}</p>
         )}
         {description && (
-          <p className="text-sm text-muted-foreground">{description}</p>
+          <p className={cn(
+            "text-sm",
+            variant === "portal" ? "text-[#1B5E20]/50" : "text-muted-foreground",
+          )}>{description}</p>
         )}
       </div>
       {action && <div className="shrink-0 self-start">{action}</div>}

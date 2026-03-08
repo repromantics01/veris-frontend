@@ -7,7 +7,6 @@ import { cn } from "@/src/lib/utils"
 import { Button } from "@/src/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/src/components/ui/sheet"
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar"
-import { ModeToggle } from "@/src/components/ui/mode-toggle"
 import { currentStudent } from "@/features/portal/mock-data"
 import { useState } from "react"
 
@@ -16,7 +15,7 @@ const navItems = [
   { label: "Events",    href: "/portal-events",    icon: CalendarDays },
   { label: "Fees",      href: "/portal-fees",      icon: Banknote },
   { label: "Fines",     href: "/portal-fines",     icon: AlertTriangle },
-  { label: "Clearance", href: "/portal-clearance", icon: ShieldCheck },
+  { label: "Clearance", href: "/portal-clearance",  icon: ShieldCheck },
 ]
 
 export function PortalNavbar() {
@@ -24,19 +23,19 @@ export function PortalNavbar() {
   const [open, setOpen] = useState(false)
 
   return (
-    <header className="sticky top-0 z-40 bg-primary shadow-md shadow-primary/20" suppressHydrationWarning>
+    <header className="sticky top-0 z-40 border-b border-[#E0E0E0] bg-white shadow-sm" suppressHydrationWarning>
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Left: Logo + Nav */}
-        <div className="flex items-center gap-6">
-          <Link href="/portal-dashboard" className="flex items-center gap-2">
+        <div className="flex items-center gap-4 lg:gap-6">
+          <Link href="/portal-dashboard" className="flex items-center gap-2 shrink-0">
             <div className="flex size-7 items-center justify-center rounded-md bg-transparent">
-              <img src="/ussc-logo-white.webp" alt="USSC Logo" className="h-auto" />
+              <img src="/ussc-logo-1.webp" alt="USSC Logo" className="h-auto w-auto object-contain" />
             </div>
-            <span className="text-sm font-semibold text-primary-foreground">USSC Connect</span>
+            <span className="text-sm font-bold uppercase tracking-wide bg-linear-to-r from-[#8BC34A] via-[#2E7D32] to-[#1B5E20] bg-clip-text text-transparent">USSC Connect</span>
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden items-center gap-1 md:flex">
+          <nav className="hidden items-center gap-0.5 md:flex">
             {navItems.map(item => {
               const isActive = item.href === "/portal-dashboard" ? pathname === "/portal-dashboard" : pathname.startsWith(item.href)
               return (
@@ -44,10 +43,10 @@ export function PortalNavbar() {
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors",
+                    "flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold uppercase tracking-wide transition-colors",
                     isActive
-                      ? "bg-white/20 text-white"
-                      : "text-primary-foreground/70 hover:bg-white/15 hover:text-primary-foreground"
+                      ? "bg-[#8BC34A]/15 text-[#1B5E20] border border-[#8BC34A]/30"
+                      : "text-[#616161] hover:bg-[#F5F5F5] hover:text-[#1B5E20]"
                   )}
                 >
                   <item.icon className="size-3.5" />
@@ -59,53 +58,53 @@ export function PortalNavbar() {
         </div>
 
         {/* Right: User info + actions */}
-        <div className="flex items-center gap-3">
-          <div className="[&>button]:border-white/20 [&>button]:bg-white/10 [&>button]:text-primary-foreground hover:[&>button]:bg-white/20">
-            {/* <ModeToggle /> */}
-          </div>
+        <div className="flex items-center gap-2 sm:gap-3">
           <div className="hidden items-center gap-2 sm:flex">
-            <Avatar className="size-7">
-              <AvatarFallback className="bg-white/20 text-xs font-semibold text-primary-foreground">
+            <Avatar className="size-7 border border-[#1B5E20]/20">
+              <AvatarFallback className="bg-[#1B5E20] text-[10px] font-bold text-white">
                 {currentStudent.firstName[0]}{currentStudent.lastName[0]}
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col">
-              <span className="text-xs font-medium leading-none text-primary-foreground">
+            <div className="hidden flex-col lg:flex">
+              <span className="text-xs font-medium leading-none text-[#212121]">
                 {currentStudent.firstName} {currentStudent.lastName}
               </span>
-              <span className="text-xs text-primary-foreground/60">{currentStudent.studentId}</span>
+              <span className="text-[10px] text-[#616161]">{currentStudent.studentId}</span>
             </div>
           </div>
           <Link href="/">
-            <Button variant="ghost" size="sm" className="hidden gap-1.5 text-primary-foreground/70 hover:bg-white/15 hover:text-primary-foreground sm:flex">
+            <Button variant="ghost" size="sm" className="hidden gap-1.5 text-[#616161] hover:bg-[#F5F5F5] hover:text-[#1B5E20] sm:flex">
               <LogOut className="size-3.5" />
-              Sign Out
+              <span className="hidden lg:inline">Sign Out</span>
             </Button>
           </Link>
 
           {/* Mobile hamburger */}
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon" className="size-8 text-primary-foreground hover:bg-white/15 hover:text-primary-foreground">
-                <Menu className="size-4" />
+              <Button variant="ghost" size="icon" className="size-8 text-[#616161] hover:bg-[#F5F5F5] hover:text-[#1B5E20]">
+                <Menu className="size-5" />
                 <span className="sr-only">Menu</span>
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="w-64">
+            <SheetContent side="right" className="w-72 border-l-[#E0E0E0] bg-white p-0">
               <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
-              <div className="flex flex-col gap-4 pt-8">
-                <div className="flex items-center gap-3 px-2">
-                  <Avatar className="size-9">
-                    <AvatarFallback className="bg-primary text-sm font-semibold text-primary-foreground">
+              <div className="flex flex-col">
+                {/* Mobile header */}
+                <div className="flex items-center gap-3 border-b border-[#E0E0E0] bg-[#F5F5F5] px-4 py-5">
+                  <Avatar className="size-10 border border-[#1B5E20]/20">
+                    <AvatarFallback className="bg-[#1B5E20] text-sm font-bold text-white">
                       {currentStudent.firstName[0]}{currentStudent.lastName[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-medium text-foreground">{currentStudent.firstName} {currentStudent.lastName}</p>
-                    <p className="text-xs text-muted-foreground">{currentStudent.studentId}</p>
+                    <p className="text-sm font-semibold text-[#212121]">{currentStudent.firstName} {currentStudent.lastName}</p>
+                    <p className="text-xs text-[#616161]">{currentStudent.studentId}</p>
                   </div>
                 </div>
-                <nav className="flex flex-col gap-1">
+
+                {/* Mobile nav links */}
+                <nav className="flex flex-col gap-0.5 p-3">
                   {navItems.map(item => {
                     const isActive = item.href === "/portal-dashboard" ? pathname === "/portal-dashboard" : pathname.startsWith(item.href)
                     return (
@@ -114,21 +113,27 @@ export function PortalNavbar() {
                         href={item.href}
                         onClick={() => setOpen(false)}
                         className={cn(
-                          "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                          isActive ? "bg-primary/10 text-primary font-semibold" : "text-muted-foreground hover:bg-primary/5 hover:text-primary"
+                          "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                          isActive
+                            ? "bg-[#8BC34A]/15 text-[#1B5E20] font-semibold border border-[#8BC34A]/30"
+                            : "text-[#616161] hover:bg-[#F5F5F5] hover:text-[#1B5E20]"
                         )}
                       >
-                        <item.icon className="size-4" />
+                        <item.icon className="size-4 shrink-0" />
                         {item.label}
                       </Link>
                     )
                   })}
                 </nav>
-                <Link href="/" onClick={() => setOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2 text-muted-foreground">
-                    <LogOut className="size-4" /> Sign Out
-                  </Button>
-                </Link>
+
+                {/* Mobile sign out */}
+                <div className="mt-auto border-t border-[#E0E0E0] p-3">
+                  <Link href="/" onClick={() => setOpen(false)}>
+                    <Button variant="ghost" className="w-full justify-start gap-2 text-[#616161] hover:bg-[#F5F5F5] hover:text-[#1B5E20]">
+                      <LogOut className="size-4" /> Sign Out
+                    </Button>
+                  </Link>
+                </div>
               </div>
             </SheetContent>
           </Sheet>

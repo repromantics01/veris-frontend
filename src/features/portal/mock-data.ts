@@ -5,28 +5,27 @@ import type { Fee, PaymentLog } from "../admin/fees/types"
 import type { EventAttendance } from "../admin/events/types"
 import type { Student } from "../admin/members/types"
 
-// ─── Demo student with every possible UI scenario covered ─────────────────
-// This mock student has data crafted to exercise every state/variant
-// in the portal UI: all fee statuses, all fine states, all clearance states,
+// demo student with every possible UI scenario covered 
+// this mock student has data crafted to exercise every state/variant
+// in the portal ui: all fee statuses, all fine states, all clearance states,
 // all event attendance statuses.
 
 export const currentStudent: Student = {
   id: "demo",
-  studentId: "24-1-00199",
+  studentId: "04-1-00199",
   firstName: "Alex",
   lastName: "Demo",
-  email: "alex.demo@university.edu.ph",
+  email: "04-1-00199@vsu.edu.ph",
   program: "BS Computer Science",
   yearLevel: 3,
   status: "approved",
   registrationDate: "2024-06-15",
 }
 
-// ─── Fees: verified · pending · rejected · unpaid ─────────────────────────
 export const currentStudentFees: Fee[] = [
   {
-    id: "fee-1",
-    title: "2nd Semester USSC Membership Fee",
+    id: "fee-2",
+    title: "USSC Membership Fee",
     description: "Annual USSC membership fee for 2nd semester A.Y. 2025-2026.",
     type: "semestral-membership",
     amount: 100,
@@ -36,18 +35,18 @@ export const currentStudentFees: Fee[] = [
     totalStudents: 20,
     paidCount: 10,
   },
-  // {
-  //   id: "fee-2",
-  //   title: "Community Outreach Charity Fee",
-  //   description: "Contribution for the community outreach program on November 2024.",
-  //   type: "charity-fee",
-  //   amount: 50,
-  //   academicYear: "2025-2026",
-  //   semester: "1st Semester",
-  //   createdAt: "2024-10-15",
-  //   totalStudents: 20,
-  //   paidCount: 3,
-  // },
+  {
+    id: "fee-1",
+    title: "Faculty of Computing Research Colloquium",
+    description: "Contribution for the faculty's research colloquium.",
+    type: "organization-fee",
+    amount: 200,
+    academicYear: "2025-2026",
+    semester: "2nd Semester",
+    createdAt: "2024-10-15",
+    totalStudents: 20,
+    paidCount: 3,
+  },
   // {
   //   id: "fee-3",
   //   title: "State of the Student Address Event Fee",
@@ -60,37 +59,26 @@ export const currentStudentFees: Fee[] = [
   //   totalStudents: 20,
   //   paidCount: 2,
   // },
-  {
-    id: "fee-4",
-    title: "Organization Research Colloquium",
-    description: "Contribution to the USSC organization development and operations.",
-    type: "organization-fee",
-    amount: 200,
-    academicYear: "2025-2026",
-    semester: "2nd Semester",
-    createdAt: "2025-01-10",
-    totalStudents: 20,
-    paidCount: 1,
-  },
+
 ]
 
 export const currentStudentPaymentLogs: PaymentLog[] = [
   // fee-1: verified (paid)
-  {
-    id: "demo-pl1",
-    feeId: "fee-1",
-    feeName: "1st Semester Membership Fee",
-    studentId: currentStudent.studentId,
-    studentName: `${currentStudent.firstName} ${currentStudent.lastName}`,
-    status: "verified",
-    amountPaid: 150,
-    paymentMethod: "gcash",
-    gcashReferenceNumber: "GC-2024-07-199001",
-    receiptImage: "/receipts/demo1.png",
-    paidAt: "2024-07-10",
-    verifiedBy: "Admin",
-    verifiedAt: "2024-07-11",
-  },
+  // {
+  //   id: "demo-pl1",
+  //   feeId: "fee-1",
+  //   feeName: "1st Semester Membership Fee",
+  //   studentId: currentStudent.studentId,
+  //   studentName: `${currentStudent.firstName} ${currentStudent.lastName}`,
+  //   status: "pending_verification",
+  //   amountPaid: 150,  
+  //   paymentMethod: "gcash",
+  //   gcashReferenceNumber: "GC-2024-07-199001",
+  //   receiptImage: "/receipts/demo1.png",
+  //   paidAt: "2024-07-10",
+  //   verifiedBy: "Admin",
+  //   verifiedAt: "2024-07-11",
+  // },
   // // fee-2: pending_verification
   // {
   //   id: "demo-pl2",
@@ -137,51 +125,51 @@ export const currentStudentFineRecord: StudentFineRecord = {
       eventName: "State of the Student Address 2nd Semester A.Y. 2025-2026",
       eventDate: "2024-09-15",
       amount: 50,
-      reason: "Absent without notice — State of the Student Address 2nd Semester A.Y. 2025-2026",
+      reason: "Missed the major event.",
       issuedBy: "Admin",
-      issuedAt: "2024-09-16",
+      issuedAt: "2026-03-11",
       isWaived: false,
     },
     // 2. Unpaid, appeal is PENDING review
-    {
-      id: "demo-fi2",
-      itemNumber: 2,
-      fineTypeCode: "ABSENT",
-      fineTypeName: "Absence Fine",
-      eventName: "Leadership Seminar",
-      eventDate: "2024-10-05",
-      amount: 50,
-      reason: "Absent without notice — Leadership Seminar",
-      issuedBy: "Admin",
-      issuedAt: "2024-10-06",
-      isWaived: false,
-      appeal: {
-        notes: "I was concurrently attending a university-required academic competition that day and could not be present. I have attached the official permit signed by my adviser.",
-        appealedAt: "2024-10-09",
-        status: "pending",
-      },
-    },
+    // {
+    //   id: "demo-fi2",
+    //   itemNumber: 2,
+    //   fineTypeCode: "ABSENT",
+    //   fineTypeName: "Absence Fine",
+    //   eventName: "Leadership Seminar",
+    //   eventDate: "2024-10-05",
+    //   amount: 50,
+    //   reason: "Absent without notice — Leadership Seminar",
+    //   issuedBy: "Admin",
+    //   issuedAt: "2024-10-06",
+    //   isWaived: false,
+    //   appeal: {
+    //     notes: "I was concurrently attending a university-required academic competition that day and could not be present. I have attached the official permit signed by my adviser.",
+    //     appealedAt: "2024-10-09",
+    //     status: "pending",
+    //   },
+    // },
     // 3. Appeal APPROVED → fine effectively cleared
-    {
-      id: "demo-fi3",
-      itemNumber: 3,
-      fineTypeCode: "ABSENT",
-      fineTypeName: "Absence Fine",
-      eventName: "Research Colloquium",
-      eventDate: "2024-10-18",
-      amount: 50,
-      reason: "Absent without notice — Research Colloquium",
-      issuedBy: "Admin",
-      issuedAt: "2024-10-19",
-      isWaived: false,
-      appeal: {
-        notes: "I had a documented medical consultation that overlapped with the event. Attached is my medical certificate from the university clinic.",
-        appealedAt: "2024-10-22",
-        status: "approved",
-        resolvedBy: "Admin",
-        resolvedAt: "2024-10-28",
-      },
-    },
+    // {
+    //   id: "demo-fi3",
+    //   itemNumber: 3,
+    //   fineTypeCode: "ABSENT",
+    //   fineTypeName: "Absence Fine",
+    //   eventName: "State of the Student Address 1st Semester A.Y. 2025-2026",
+    //   eventDate: "2024-10-18",
+    //   amount: 50,
+    //   reason: "Absent without notice — State of the Student Address 1st Semester A.Y. 2025-2026",
+    //   issuedBy: "Admin",
+    //   issuedAt: "2024-10-19",
+    //   isWaived: false,
+    //   appeal: {
+    //     notes: "I had a documented medical consultation that overlapped with the event. Attached is my medical certificate from the university clinic.",
+    //     appealedAt: "2024-10-22",
+    //     status: "approved",
+    //     resolvedBy: "Admin",
+    //     resolvedAt: "2024-10-28",
+    //   },
+    // },
     // 4. Appeal REJECTED → student may re-appeal
     // {
     //   id: "demo-fi4",
@@ -220,37 +208,36 @@ export const currentStudentFineRecord: StudentFineRecord = {
     //   waivedReason: "First-time offense; student was a newly enrolled transferee unaware of the dress code policy.",
     // },
     // 6. Late submission fine, no appeal → can appeal
-    {
-      id: "demo-fi6",
-      itemNumber: 6,
-      fineTypeCode: "VIOLATION",
-      fineTypeName: "Late Submission Violation",
-      amount: 25,
-      reason: "Clearance documents submitted 3 days past the deadline",
-      issuedBy: "Admin",
-      issuedAt: "2024-10-20",
-      isWaived: false,
-    },
+    // {
+    //   id: "demo-fi6",
+    //   itemNumber: 6,
+    //   fineTypeCode: "VIOLATION",
+    //   fineTypeName: "Late Submission Violation",
+    //   amount: 25,
+    //   reason: "Clearance documents submitted 3 days past the deadline",
+    //   issuedBy: "Admin",
+    //   issuedAt: "2024-10-20",
+    //   isWaived: false,
+    // },
     // 7. Unpaid, no appeal → can appeal; event-based fine
-    {
-      id: "demo-fi7",
-      itemNumber: 7,
-      fineTypeCode: "ABSENT",
-      fineTypeName: "Absence Fine",
-      eventName: "Community Service Day",
-      eventDate: "2024-11-09",
-      amount: 75,
-      reason: "Absent without notice — Community Service Day",
-      issuedBy: "Admin",
-      issuedAt: "2024-11-10",
-      isWaived: false,
-    },
+    // {
+    //   id: "demo-fi7",
+    //   itemNumber: 7,
+    //   fineTypeCode: "ABSENT",
+    //   fineTypeName: "Absence Fine",
+    //   eventName: "Community Service Day",
+    //   eventDate: "2024-11-09",
+    //   amount: 75,
+    //   reason: "Absent without notice — Community Service Day",
+    //   issuedBy: "Admin",
+    //   issuedAt: "2024-11-10",
+    //   isWaived: false,
+    // },
   ],
   // No bulk payment submission yet — student has outstanding items to pay or appeal first
   bulkPaymentSubmission: undefined,
 }
 
-// Derived flat fines list (used by dashboard cards)
 export const currentStudentFines = currentStudentFineRecord.fineItems.map(i => ({
   id: i.id,
   studentId: currentStudent.studentId,
@@ -268,30 +255,26 @@ export const currentStudentFines = currentStudentFineRecord.fineItems.map(i => (
     : undefined,
 }))
 
-// ─── Clearance: mix of cleared · pending · not-cleared requirements ────────
 export const currentStudentClearance: Clearance = {
   id: "demo-c1",
   studentId: currentStudent.studentId,
   studentName: `${currentStudent.firstName} ${currentStudent.lastName}`,
   academicYear: "2025-2026",
-  semester: "1st Semester",
+  semester: "2nd Semester",
   overallStatus: "not-cleared",
   requirements: [
-    { name: "Fees", status: "cleared" },
+    { name: "Fees", status: "not-cleared" },
     { name: "Fines", status: "not-cleared" },
   ],
 }
 
-// ─── Event Attendance: present · absent · excused ─────────────────────────
 export const currentStudentAttendance: EventAttendance[] = [
-  { id: "demo-ea1", eventId: "e1", studentId: currentStudent.studentId, studentName: `${currentStudent.firstName} ${currentStudent.lastName}`, eventName: "State of the Student Address 2nd Semester A.Y. 2025-2026",    status: "present",  timeIn: "08:10" },
-  { id: "demo-ea2", eventId: "e2", studentId: currentStudent.studentId, studentName: `${currentStudent.firstName} ${currentStudent.lastName}`, eventName: "Leadership Seminar",        status: "absent" },
-  { id: "demo-ea3", eventId: "e3", studentId: currentStudent.studentId, studentName: `${currentStudent.firstName} ${currentStudent.lastName}`, eventName: "Tech Workshop: Web Dev",    status: "excused" },
-  { id: "demo-ea4", eventId: "e4", studentId: currentStudent.studentId, studentName: `${currentStudent.firstName} ${currentStudent.lastName}`, eventName: "USSC Welcome Party",         status: "present",  timeIn: "09:55" },
-]
+  { id: "demo-ea1", eventId: "e1", studentId: currentStudent.studentId, studentName: `${currentStudent.firstName} ${currentStudent.lastName}`, eventName: "State of the Student Address: The Student Assembly",    status: "absent" },
+  { id: "demo-ea2", eventId: "e2", studentId: currentStudent.studentId, studentName: `${currentStudent.firstName} ${currentStudent.lastName}`, eventName: "CS3 Assembly and Orientation", status: "present", timeIn: "14:00" },
+  ]
 
 export { events, currentStudentFees as fees }
 
-export const GCASH_QR_CODE = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" // Placeholder QR code
+export const GCASH_QR_CODE = "/qr-code.png"
 export const GCASH_ACCOUNT_NAME = "University Supreme Student Council"
 export const GCASH_ACCOUNT_NUMBER = "09123456789"

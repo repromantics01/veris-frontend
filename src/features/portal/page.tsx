@@ -21,129 +21,111 @@ export default function PortalDashboard() {
   const clearance = currentStudentClearance
   const eventsAttended = currentStudentAttendance.filter(a => a.status === "present").length
 
+  const statusCards = [
+    {
+      href: "/portal-fines",
+      icon: AlertTriangle,
+      iconColor: unpaidFines.length > 0 ? "text-destructive" : "text-muted-foreground",
+      value: unpaidFines.length > 0 ? `₱${totalUnpaidAmount}` : "None",
+      label: unpaidFines.length > 0 ? `${unpaidFines.length} unpaid fine(s)` : "No outstanding fines",
+      title: "FINES",
+    },
+    {
+      href: "/portal-clearance",
+      icon: ShieldCheck,
+      iconColor: clearance?.overallStatus === "cleared" ? "text-[#8BC34A]" :
+        clearance?.overallStatus === "not-cleared" ? "text-destructive" : "text-[#1B5E20]",
+      value: clearance?.overallStatus.replace("-", " ") || "N/A",
+      label: "Clearance status",
+      title: "CLEARANCE",
+    },
+    {
+      href: "/portal-fees",
+      icon: Banknote,
+      iconColor: feeStatus === "paid" ? "text-[#8BC34A]" : "text-[#1B5E20]",
+      value: feeStatus,
+      label: "Fees this semester",
+      title: "FEES",
+    },
+    {
+      href: "/portal-events",
+      icon: CalendarDays,
+      iconColor: "text-[#1B5E20]",
+      value: eventsAttended.toString(),
+      label: "Events attended",
+      title: "EVENTS",
+    },
+  ]
+
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5 sm:gap-6">
       <PageHeader
-        title={`Welcome, ${currentStudent.firstName}!`}
+        variant="portal"
+        title="Student Dashboard"
         context="2nd Semester · A.Y. 2025–2026"
-        description={`${currentStudent.program} — Year ${currentStudent.yearLevel}`}
+        description={`Welcome, ${currentStudent.firstName} ${currentStudent.lastName} · ${currentStudent.program} — Year ${currentStudent.yearLevel}`}
       />
 
       {/* Quick Status Cards */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* Fines Card */}
-        <Link href="/portal/fines">
-          <Card className="group h-full border-border transition-all hover:border-primary hover:shadow-md">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <AlertTriangle className={cn("size-5", unpaidFines.length > 0 ? "text-destructive" : "text-muted-foreground")} />
-                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-foreground">
-                {unpaidFines.length > 0 ? `P${totalUnpaidAmount}` : "None"}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {unpaidFines.length > 0 ? `${unpaidFines.length} unpaid fine(s)` : "No outstanding fines"}
-              </p>
-            </CardContent>
-          </Card>
-        </Link>
-
-        {/* Clearance Card */}
-        <Link href="/portal/clearance">
-          <Card className="group h-full border-border transition-all hover:border-primary hover:shadow-md">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <ShieldCheck className={cn(
-                  "size-5",
-                  clearance?.overallStatus === "cleared" ? "text-success" :
-                    clearance?.overallStatus === "not-cleared" ? "text-destructive" : "text-warning"
-                )} />
-                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold capitalize text-foreground">
-                {clearance?.overallStatus.replace("-", " ") || "N/A"}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Clearance status -- 1st Sem
-              </p>
-            </CardContent>
-          </Card>
-        </Link>
-
-        {/* Fees Card */}
-        <Link href="/portal/fees">
-          <Card className="group h-full border-border transition-all hover:border-primary hover:shadow-md">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <Banknote className={cn("size-5", feeStatus === "paid" ? "text-success" : "text-warning")} />
-                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold capitalize text-foreground">{feeStatus}</p>
-              <p className="text-xs text-muted-foreground">Membership fee -- P150.00</p>
-            </CardContent>
-          </Card>
-        </Link>
-
-        {/* Events Card */}
-        <Link href="/portal/events">
-          <Card className="group h-full border-border transition-all hover:border-primary hover:shadow-md">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
-                <CalendarDays className="size-5 text-primary" />
-                <ArrowRight className="size-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <p className="text-2xl font-bold text-foreground">{eventsAttended}</p>
-              <p className="text-xs text-muted-foreground">Events attended this semester</p>
-            </CardContent>
-          </Card>
-        </Link>
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        {statusCards.map(card => (
+          <Link key={card.href} href={card.href}>
+            <Card className="group h-full border-[#E0E0E0] bg-white shadow-sm transition-all hover:border-[#1B5E20]/40 hover:shadow-md">
+              <CardHeader className="px-3 pb-1 pt-3 sm:px-6 sm:pb-2 sm:pt-6">
+                <div className="flex items-center justify-between">
+                  <card.icon className={cn("size-4 sm:size-5", card.iconColor)} />
+                  <ArrowRight className="size-3.5 text-muted-foreground transition-transform group-hover:translate-x-0.5 sm:size-4" />
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">{card.title}</p>
+              </CardHeader>
+              <CardContent className="px-3 pb-3 sm:px-6 sm:pb-6">
+                <p className="text-lg font-bold capitalize text-foreground sm:text-2xl">
+                  {card.value}
+                </p>
+                <p className="text-[10px] text-muted-foreground sm:text-xs">
+                  {card.label}
+                </p>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
       </div>
 
-      {/* Bottom: Clearance Requirements + Recent Activity */}
-      <div className="grid gap-4 lg:grid-cols-2">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-2">
         {/* Clearance Requirements */}
-        <Card className="border-border">
-          <CardHeader>
-            <CardTitle className="text-base text-foreground">Clearance Requirements</CardTitle>
-            <CardDescription className="text-muted-foreground">A.Y. 2025-2026 -- 1st Semester</CardDescription>
+        <Card className="overflow-hidden border-[#E0E0E0] bg-white shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xs font-bold uppercase tracking-wider text-[#1B5E20]">Clearance Requirements</CardTitle>
+            <CardDescription className="text-xs text-[#1B5E20]/50">A.Y. 2025-2026 — 1st Semester</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-3">
+          <CardContent className="pb-6">
+            <div className="flex flex-col gap-2">
               {clearance?.requirements.map(r => {
                 const Icon = r.status === "cleared" ? Check : r.status === "pending" ? Clock : X
                 return (
                   <div
                     key={r.name}
                     className={cn(
-                      "flex items-center justify-between rounded-md border p-3",
-                      r.status === "cleared" ? "border-success/20 bg-success/5" :
+                      "flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5 sm:p-3",
+                      r.status === "cleared" ? "border-[#8BC34A]/30 bg-[#8BC34A]/5" :
                         r.status === "not-cleared" ? "border-destructive/20 bg-destructive/5" :
-                          "border-border"
+                          "border-[#E0E0E0] bg-[#1B5E20]/2"
                     )}
                   >
-                    <div className="flex items-center gap-3">
+                    <div className="flex min-w-0 items-center gap-2.5 sm:gap-3">
                       <div className={cn(
-                        "flex size-6 items-center justify-center rounded-full",
-                        r.status === "cleared" ? "bg-success text-success-foreground" :
+                        "flex size-6 shrink-0 items-center justify-center rounded-full",
+                        r.status === "cleared" ? "bg-[#8BC34A] text-white" :
                           r.status === "not-cleared" ? "bg-destructive/20 text-destructive" :
-                            "bg-muted text-muted-foreground"
+                            "bg-[#1B5E20]/10 text-[#1B5E20]"
                       )}>
                         <Icon className="size-3" />
                       </div>
-                      <span className="text-sm font-medium text-foreground">{r.name}</span>
+                      <span className="truncate text-xs font-medium text-foreground sm:text-sm">{r.name}</span>
                     </div>
                     <Badge
                       variant={r.status === "cleared" ? "secondary" : r.status === "not-cleared" ? "destructive" : "outline"}
-                      className="capitalize text-xs"
+                      className="shrink-0 capitalize text-[10px] sm:text-xs"
                     >
                       {r.status.replace("-", " ")}
                     </Badge>
@@ -154,32 +136,31 @@ export default function PortalDashboard() {
           </CardContent>
         </Card>
 
-        {/* Recent Events */}
-        <Card className="border-border">
-          <CardHeader>
-            <CardTitle className="text-base text-foreground">Event Attendance</CardTitle>
-            <CardDescription className="text-muted-foreground">Your attendance records this semester</CardDescription>
+        <Card className="overflow-hidden border-[#E0E0E0] bg-white shadow-sm">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-xs font-bold uppercase tracking-wider text-[#1B5E20]">Event Attendance</CardTitle>
+            <CardDescription className="text-xs text-[#1B5E20]/50">Your attendance records this semester</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-3">
+          <CardContent className="pb-6">
+            <div className="flex max-h-80 flex-col gap-2 overflow-y-auto">
               {currentStudentAttendance.map(a => (
-                <div key={a.id} className="flex items-center justify-between rounded-md border border-border p-3">
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-sm font-medium text-foreground">{a.eventName}</span>
-                    <span className="text-xs text-muted-foreground">
+                <div key={a.id} className="flex items-center justify-between rounded-lg border border-[#E0E0E0] px-3 py-2.5 transition-colors duration-150 hover:bg-[#FAFAFA] sm:p-3">
+                  <div className="flex min-w-0 flex-col gap-0.5">
+                    <span className="truncate text-xs font-medium text-foreground sm:text-sm">{a.eventName}</span>
+                    <span className="text-[10px] text-muted-foreground sm:text-xs">
                       {a.timeIn ? `Time in: ${a.timeIn}` : "No time recorded"}
                     </span>
                   </div>
                   <Badge
                     variant={a.status === "present" ? "secondary" : a.status === "absent" ? "destructive" : "outline"}
-                    className="capitalize"
+                    className="ml-2 shrink-0 capitalize text-[10px] sm:text-xs"
                   >
                     {a.status}
                   </Badge>
                 </div>
               ))}
               {currentStudentAttendance.length === 0 && (
-                <p className="py-4 text-center text-sm text-muted-foreground">No events attended yet.</p>
+                <p className="py-4 text-center text-xs text-muted-foreground sm:text-sm">No events attended yet.</p>
               )}
             </div>
           </CardContent>

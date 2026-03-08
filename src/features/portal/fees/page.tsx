@@ -20,7 +20,7 @@ const ITEMS_PER_PAGE = 10
 type StudentFeeStatus = "paid" | "pending" | "rejected" | "unpaid"
 
 const feeTypeLabels: Record<FeeType, string> = {
-  "semestral-membership": "Semester Membership",
+  "semestral-membership": "Semestral Membership",
   "organization-fee":   "Organization Fee",
 }
 
@@ -50,33 +50,34 @@ export default function PortalFeesPage() {
   const paginatedFees = currentStudentFees.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE)
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-5 sm:gap-6">
       <PageHeader
+        variant="portal"
         title="Fees"
         context="2nd Semester · A.Y. 2025–2026"
-        description="Your USSC fee records and payment history"
+        description="Your USSC and organizational fee records and payment history"
       />
 
       {/* Student Info Card */}
-      <Card className="border-border">
-        <CardContent className="pt-6">
+      {/* <Card className="border-[#E0E0E0] bg-[#1B5E20]/2 shadow-sm">
+        <CardContent className="p-3 sm:pt-6 sm:px-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-medium text-foreground">
+              <p className="text-xs font-semibold text-foreground sm:text-sm">
                 {currentStudent.firstName} {currentStudent.lastName}
               </p>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-[10px] text-muted-foreground sm:text-xs">
                 {currentStudent.studentId} &mdash; {currentStudent.program}
               </p>
             </div>
-            <Badge variant="secondary" className="w-fit">Active Member</Badge>
+            <Badge variant="secondary" className="w-fit text-[10px] sm:text-xs">Active Member</Badge>
           </div>
         </CardContent>
-      </Card>
+      </Card> */}
 
       {/* Fee Records */}
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold text-foreground">Fee History</h3>
+      <div className="flex flex-col gap-3 sm:gap-4">
+        {/* <h3 className="text-xs font-bold uppercase tracking-wider text-[#1B5E20]">Fee History</h3> */}
         {paginatedFees.map(fee => {
           const studentStatus = getStudentStatus(fee.id)
           const config = statusConfig[studentStatus]
@@ -84,40 +85,39 @@ export default function PortalFeesPage() {
           const log = currentStudentPaymentLogs.find(l => l.feeId === fee.id)
 
           return (
-            <Card key={fee.id} className="border-border">
-              <CardContent className="pt-6">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-start justify-between">
-                    <div className="flex items-center gap-3">
+            <Card key={fee.id} className="border-[#E0E0E0] bg-white shadow-sm transition-colors duration-150 hover:border-[#1B5E20]/30">
+              <CardContent className="p-3 sm:pt-6 sm:px-6">
+                <div className="flex flex-col gap-3 sm:gap-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-start gap-2.5 min-w-0 sm:gap-3">
                       <div className={cn(
-                        "flex size-10 items-center justify-center rounded-full",
-                        studentStatus === "paid"    ? "bg-success/10"     :
-                        studentStatus === "pending" ? "bg-muted"          :
+                        "flex size-8 shrink-0 items-center justify-center rounded-full sm:size-10",
+                        studentStatus === "paid"    ? "bg-[#8BC34A]/10"   :
+                        studentStatus === "pending" ? "bg-[#1B5E20]/10"      :
                                                       "bg-destructive/10"
                       )}>
-                        <Banknote className={cn("size-5", config.iconColor)} />
+                        <Banknote className={cn("size-4 sm:size-5", config.iconColor)} />
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-foreground">{fee.title}</p>
-                        <p className="text-xs text-muted-foreground">
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-foreground wrap-break-word sm:text-sm">{fee.title}</p>
+                        <p className="text-[10px] text-muted-foreground sm:text-xs">
                           {feeTypeLabels[fee.type]} · {fee.semester} {fee.academicYear}
                         </p>
                       </div>
                     </div>
-                    <div className="flex flex-col items-end gap-1">
-                      <span className="text-lg font-bold text-foreground">₱{fee.amount.toLocaleString()}</span>
-                      <Badge variant={config.variant} className="flex items-center gap-1 capitalize">
+                    <div className="flex shrink-0 flex-col items-end gap-1">
+                      <span className="text-sm font-bold text-foreground whitespace-nowrap sm:text-lg">₱{fee.amount.toLocaleString()}</span>
+                      <Badge variant={config.variant} className="flex items-center gap-1 capitalize text-[10px] whitespace-nowrap sm:text-xs">
                         <Icon className="size-3" />
                         {config.label}
                       </Badge>
                     </div>
                   </div>
 
-                  {/* Paid — show receipt info */}
                   {studentStatus === "paid" && log && (
                     <>
                       <Separator />
-                      <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                      <div className="flex flex-col gap-0.5 text-[10px] text-muted-foreground sm:flex-row sm:items-center sm:gap-4 sm:text-xs">
                         <span>Paid: {log.paidAt}</span>
                         <span>Method: {log.paymentMethod === "gcash" ? "GCash" : log.paymentMethod}</span>
                         {log.gcashReferenceNumber && (
@@ -127,26 +127,24 @@ export default function PortalFeesPage() {
                     </>
                   )}
 
-                  {/* Pending — inform the student */}
                   {studentStatus === "pending" && (
                     <>
                       <Separator />
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[10px] text-muted-foreground sm:text-xs">
                         Your payment is under review. You will be notified once it is verified.
                       </p>
                     </>
                   )}
 
-                  {/* Rejected — show reason */}
                   {studentStatus === "rejected" && (
                     <>
                       <Separator />
                       <div>
-                        <p className="text-xs font-medium text-destructive mb-0.5">Payment Rejected</p>
+                        <p className="text-[10px] font-medium text-destructive mb-0.5 sm:text-xs">Payment Rejected</p>
                         {log?.rejectionReason && (
-                          <p className="text-xs text-muted-foreground">{log.rejectionReason}</p>
+                          <p className="text-[10px] text-muted-foreground sm:text-xs">{log.rejectionReason}</p>
                         )}
-                        <p className="text-xs text-muted-foreground mt-1">Head to the Clearance page to resubmit payment.</p>
+                        <p className="text-[10px] text-muted-foreground mt-1 sm:text-xs">Head to the Clearance page to resubmit payment.</p>
                       </div>
                     </>
                   )}
@@ -155,7 +153,7 @@ export default function PortalFeesPage() {
                   {studentStatus === "unpaid" && (
                     <>
                       <Separator />
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-[10px] text-muted-foreground sm:text-xs">
                         Payment required. Head to the Clearance page to submit payment.
                       </p>
                     </>
@@ -167,10 +165,10 @@ export default function PortalFeesPage() {
         })}
 
         {currentStudentFees.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-12 text-center">
-            <Banknote className="size-12 text-muted-foreground" />
-            <h3 className="mt-3 text-sm font-medium text-foreground">No fee records</h3>
-            <p className="mt-1 text-xs text-muted-foreground">No fee records have been issued yet.</p>
+          <div className="flex flex-col items-center justify-center py-8 text-center sm:py-12">
+            <Banknote className="size-8 text-muted-foreground sm:size-12" />
+            <h3 className="mt-3 text-xs font-medium text-foreground sm:text-sm">No fee records</h3>
+            <p className="mt-1 text-[10px] text-muted-foreground sm:text-xs">No fee records have been issued yet.</p>
           </div>
         )}
         <DataPagination
