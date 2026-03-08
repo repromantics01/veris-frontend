@@ -5,7 +5,7 @@ export { fines } from "../fines/mock-data"
 
 export const financialSummary: FinancialSummary = {
   totalCollected: 1800,
-  totalFines: 500,
+  totalFines: 250,
   totalPending: 900,
   totalStudents: 20,
   monthlyCollections: [
@@ -21,8 +21,8 @@ export const financialSummary: FinancialSummary = {
     { status: "Partial", count: 2 },
   ],
   fineStatusBreakdown: [
-    { status: "Unpaid", count: 5 },
-    { status: "Paid", count: 3 },
+    { status: "Unpaid", count: 4 },
+    { status: "Paid", count: 1 },
     { status: "Waived", count: 1 },
   ],
 }

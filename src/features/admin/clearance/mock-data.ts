@@ -11,7 +11,6 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "cleared", items: [] },
     ],
@@ -22,7 +21,6 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "cleared", items: [] },
     ],
@@ -33,7 +31,6 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "pending", items: [
         { label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50, status: "pending",
@@ -43,11 +40,10 @@ export const clearances: Clearance[] = [
   },
   {
     id: "c4", studentId: "24-1-00105", studentName: "Patricia Navarro",
-    overallStatus: "not-cleared",
+    overallStatus: "cleared",
     requirements: [
-      { name: "Fees", status: "not-cleared", items: [
+      { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "not-cleared" },
       ]},
       { name: "Fines", status: "cleared", items: [] },
     ],
@@ -59,13 +55,8 @@ export const clearances: Clearance[] = [
       { name: "Fees", status: "pending", items: [
         { label: "Membership Fee", amount: 150, status: "pending",
           pendingPayment: {
-            method: "Bank Transfer", referenceNo: "BT-2026-003817", amountPaid: 200, submittedAt: "Feb 10, 2026",
-            coveredItems: [
-              { label: "Membership Fee", amount: 150 },
-              { label: "Community Outreach Fund", amount: 50 },
-            ],
+            method: "Bank Transfer", referenceNo: "BT-2026-003817", amountPaid: 150, submittedAt: "Feb 10, 2026",
           } },
-        { label: "Community Outreach Fund", amount: 50, status: "pending" },
       ]},
       { name: "Fines", status: "cleared", items: [] },
     ],
@@ -76,7 +67,6 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "cleared", items: [] },
     ],
@@ -87,11 +77,10 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "not-cleared", items: [
-        { label: "Absence Fine — Leadership Summit", amount: 50, status: "not-cleared" },
-        { label: "Late Payment Penalty", amount: 25, status: "not-cleared" },
+        { label: "CS Week Day 1", amount: 25, status: "not-cleared" },
+        { label: "CS Week Day 2", amount: 25, status: "not-cleared" },
       ]},
     ],
   },
@@ -101,7 +90,6 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "not-cleared", items: [
         { label: "Membership Fee", amount: 150, status: "not-cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "not-cleared" },
       ]},
       { name: "Fines", status: "not-cleared", items: [
         { label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50, status: "not-cleared" },
@@ -114,7 +102,6 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "cleared", items: [] },
     ],
@@ -125,7 +112,6 @@ export const clearances: Clearance[] = [
     requirements: [
       { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "cleared" },
       ]},
       { name: "Fines", status: "cleared", items: [] },
     ],
@@ -134,19 +120,14 @@ export const clearances: Clearance[] = [
     id: "c11", studentId: "24-1-00114", studentName: "Lorenzo Aguilar",
     overallStatus: "pending",
     requirements: [
-      { name: "Fees", status: "pending", items: [
+      { name: "Fees", status: "cleared", items: [
         { label: "Membership Fee", amount: 150, status: "cleared" },
-        { label: "Community Outreach Fund", amount: 50, status: "pending",
-          pendingPayment: {
-            method: "GCash", referenceNo: "GC-2026-019452", amountPaid: 100, submittedAt: "Feb 25, 2026",
-            coveredItems: [
-              { reqName: "Fees",  label: "Community Outreach Fund", amount: 50 },
-              { reqName: "Fines", label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50 },
-            ],
-          } },
       ]},
       { name: "Fines", status: "pending", items: [
-        { label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50, status: "pending" },
+        { label: "Absence Fine — State of the Student Address 2nd Semester A.Y. 2025-2026", amount: 50, status: "pending",
+          pendingPayment: {
+            method: "GCash", referenceNo: "GC-2026-019452", amountPaid: 50, submittedAt: "Feb 25, 2026",
+          } },
       ]},
     ],
   },
